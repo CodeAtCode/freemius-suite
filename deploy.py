@@ -19,15 +19,18 @@ def create_token_header():
     string_to_sign = "GET\n"+\
                      "application/x-www-form-urlencoded\n"+\
                      datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
-    signature = {'FS ': config.get('Login', 'user') + ':' + config.get('Login', 'pubkey') + ':' + create_signature(string_to_sign)}
+    signature = {
+                 'FS ': config.get('Login', 'user') + ':' + config.get('Login', 'pubkey') + ':' + create_signature(string_to_sign),
+                "Content-type": "application/x-www-form-urlencoded",
+    }
     return signature
 
 def generate_parameter():
     return urllib3.request.urlencode({'developer_id': config.get('Login', 'user')})
     
-conn = HTTPConnection('fast-api.freemius.com/v1/ping.json')
-conn.request('GET', '', generate_parameter(), create_token_header())
+conn = HTTPConnection('fast-api.freemius.com')
+conn.request('GET', '/v1/ping.json', generate_parameter(), create_token_header())
 response = conn.getresponse()
 print(response.status, response.reason)
 data = response.read()
-print(response.getresponse())
+print(data)
