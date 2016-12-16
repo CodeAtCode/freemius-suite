@@ -1,4 +1,7 @@
 #!/bin/bash
+# First parameter not mandatory is the folder of the plugin, if not set use the current working directory
+# Second parameter not mandatory is the root file of the plugin, if not set use the foldername of the plugin (not require the extension of the file)
+
 
 pluginfolder=$1
 originalfoldername=`basename $pluginfolder`
@@ -46,7 +49,7 @@ rm -rf ./tests
 echo "Downloading clean composer dependencies..."
 composer update --no-dev &> /dev/null
 
-#Remove Fake_Freemius
+#Remove Fake_Freemius - it is the only requirement for Freemius
 if [ -f './includes/Fake_Freemius.php' ]; then
     echo "Cleaning for Freemius"
     rm -rf ./includes/Fake_Freemius.php
