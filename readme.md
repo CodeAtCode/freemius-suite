@@ -1,12 +1,13 @@
 #Freemius Suite
 [![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)   
 
-The focus of this project is to have a suite of scripts to automatize few step on the deploy of a new version of a plugin on Freemius.
+The focus of this project is to have a suite of scripts to automatize few steps on the deploy of a new version of a plugin on Freemius.
 
 ##package.sh
 
 This script from a folder generate a zip package ready to be uploaded on Freemius.  
 It also switch from Fake_Freemius if in the code is enabled.  
+Generate a zip in the working directory where the plugin is executed.
 
 `package.sh [plugin-folder] [plugin-root-filename]`
 

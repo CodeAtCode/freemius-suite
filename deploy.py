@@ -39,6 +39,13 @@ else:
     print(' Authentication on Freemius is not working!')
     exit
 print(sys.argv)
-
+#Check if parameter exist
 subprocess.call("./package.sh " + sys.argv[1] + " " + sys.argv[2], shell=True)
-#data = response.read()
+
+
+
+conn.request('GET', '/v1/plugins.json', generate_request_parameter({'plugin_id':config.get('Login', 'pubkey')}), create_token_header())
+response = conn.getresponse()
+if response.reason == 'OK':
+    print(response.read())
+    
