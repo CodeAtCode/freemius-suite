@@ -34,6 +34,7 @@ rm -rf ./wp-config-test.php
 rm -rf ./*.yml
 rm -rf ./package.json
 rm -rf ./Gruntfile.js
+rm -rf ./composer.lock
 rm -rf ./.netbeans*
 rm -rf ./.php_cs
 rm -rf ./assets
@@ -46,8 +47,14 @@ rm -rf ./*.zip
 rm -rf ./vendor
 rm -rf ./tests
 
-echo "Downloading clean composer dependencies..."
-composer update --no-dev &> /dev/null
+#Detect if there are composer dependencies
+dep=`cat composer.json | python -c "import json,sys;sys.stdout.write('true') if 'require' in json.load(sys.stdin)==False else sys.stdout.write('')"`7
+if [ ! -z ${dep// } ]; then
+    echo "Downloading clean composer dependencies..."
+    composer update --no-dev &> /dev/null
+else
+    rm -rf composer.json
+fi
 
 #Remove Fake_Freemius - it is the only requirement for Freemius
 if [ -f './includes/Fake_Freemius.php' ]; then
