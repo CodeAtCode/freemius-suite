@@ -1,27 +1,33 @@
 #!/usr/bin/python3
-import sys, configparser,urllib3,urllib
+import sys, configparser,urllib3
+from _sha1 import sha1
 from base64 import b64encode
 from datetime import datetime
-from Crypto.Hash import SHA, HMAC
+from http.client import HTTPConnection
+import hmac
 
 # Load configuration
 config = configparser.RawConfigParser()
 config.readfp(open('config.ini')) 
 
-def create_signature(secret_key, string):
+def create_signature(string_to_sign):
     """ Create the signed message from api_key and string_to_sign """
-    hmac = HMAC.new(secret_key, string.encode('utf-8'), SHA)
-    return b64encode(hmac.hexdigest())
+    signed = hmac.new(config.get('Login', 'secretkey').encode('utf-8'), string_to_sign.encode('utf-8'), sha1).digest()
+    return b64encode(signed).decode()
 
-def create_token():
+def create_token_header():
     string_to_sign = "GET\n"+\
                      "application/x-www-form-urlencoded\n"+\
                      datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
-    hmac = create_signature(config.get('Login', 'secretkey'), string_to_sign)
-    signature = {'FS ': config.get('Login', 'user') + ':' + config.get('Login', 'pubkey') + hmac}
+    signature = {'FS ': config.get('Login', 'user') + ':' + config.get('Login', 'pubkey') + ':' + create_signature(string_to_sign)}
     return signature
 
-data = urllib.parse.urlencode('')
-req = urllib3.request('https://fast-api.freemius.com/v1/developers/' + config.get('Login', 'user') + '/ping.json', data, create_token())
-response = urllib3.request.urlopen(req)
-print(response)
+def generate_parameter():
+    return urllib3.request.urlencode({'developer_id': config.get('Login', 'user')})
+    
+conn = HTTPConnection('fast-api.freemius.com/v1/ping.json')
+conn.request('GET', '', generate_parameter(), create_token_header())
+response = conn.getresponse()
+print(response.status, response.reason)
+data = response.read()
+print(response.getresponse())
