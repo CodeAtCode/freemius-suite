@@ -2,7 +2,6 @@
 # First parameter not mandatory is the folder of the plugin, if not set use the current working directory
 # Second parameter not mandatory is the root file of the plugin, if not set use the foldername of the plugin (not require the extension of the file)
 
-
 pluginfolder=$1
 originalfoldername=`basename $pluginfolder`
 wd=$PWD
@@ -17,7 +16,7 @@ fi
 r=$(( $RANDOM % 10 ));
 foldername="$originalfoldername-$r"
 
-echo "Generating the zip in progress..."
+echo "-Generating the zip in progress..."
 
 cp -ar $pluginfolder /tmp/$foldername
 
@@ -25,7 +24,7 @@ cd /tmp/$foldername
 
 version=`grep "^Stable tag:" README.txt | awk -F' ' '{print $NF}'`
 
-echo "Cleaning in Progress..."
+echo "-Cleaning in Progress..."
 rm -rf ./.git*
 rm -rf ./.sass-cache
 rm -rf ./.directory
@@ -50,7 +49,7 @@ rm -rf ./tests
 #Detect if there are composer dependencies
 dep=`cat composer.json | python -c "import json,sys;sys.stdout.write('true') if 'require' in json.load(sys.stdin)==False else sys.stdout.write('')"`7
 if [ ! -z ${dep// } ]; then
-    echo "Downloading clean composer dependencies..."
+    echo "-Downloading clean composer dependencies..."
     composer update --no-dev &> /dev/null
 else
     rm -rf composer.json
@@ -58,7 +57,7 @@ fi
 
 #Remove Fake_Freemius - it is the only requirement for Freemius
 if [ -f './includes/Fake_Freemius.php' ]; then
-    echo "Cleaning for Freemius"
+    echo "-Cleaning for Freemius"
     rm -rf ./includes/Fake_Freemius.php
     rowff=`grep -n "/includes/Fake_Freemius.php" $fileroot.php | awk -F: '{print $1}'`
     rowff+='d'
@@ -73,4 +72,4 @@ zip -r $wd/$originalfoldername-$version.zip ./ &> /dev/null
 
 rm -rf /tmp/$foldername
 
-echo "Done!"
+echo "-Done!"

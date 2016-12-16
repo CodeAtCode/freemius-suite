@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import sys, configparser,urllib3
+import sys, configparser,urllib3,subprocess
 from _sha1 import sha1
 from base64 import b64encode
 from datetime import datetime
@@ -11,26 +11,34 @@ config = configparser.RawConfigParser()
 config.readfp(open('config.ini')) 
 
 def create_signature(string_to_sign):
-    """ Create the signed message from api_key and string_to_sign """
-    signed = hmac.new(config.get('Login', 'secretkey').encode('utf-8'), string_to_sign.encode('utf-8'), sha1).digest()
-    return b64encode(signed).decode()
+    """ Create the signature for HMAC-SHA1 """
+    return b64encode(hmac.new(config.get('Login', 'secretkey').encode('utf-8'), string_to_sign.encode('utf-8'), sha1).digest()).decode()
 
 def create_token_header():
+    """ Create an header http://docs.freemius.apiary.io/#introduction/the-authentication-header """
     string_to_sign = "GET\n"+\
                      "application/x-www-form-urlencoded\n"+\
                      datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
     signature = {
-                 'FS ': config.get('Login', 'user') + ':' + config.get('Login', 'pubkey') + ':' + create_signature(string_to_sign),
-                "Content-type": "application/x-www-form-urlencoded",
+                 'FS ': config.get('Login', 'user') + ':' + config.get('Login', 'pubkey') + ':' + create_signature(string_to_sign)
     }
     return signature
 
-def generate_parameter():
-    return urllib3.request.urlencode({'developer_id': config.get('Login', 'user')})
-    
+def generate_request_parameter(parameter={}):
+    devid = {'developer_id': config.get('Login', 'user')}
+    # Merge the dicts
+    return urllib3.request.urlencode(dict(list(parameter.items()) + list(devid.items())))
+
+#Do the ping!
 conn = HTTPConnection('fast-api.freemius.com')
-conn.request('GET', '/v1/ping.json', generate_parameter(), create_token_header())
+conn.request('GET', '/v1/ping.json', generate_request_parameter(), create_token_header())
 response = conn.getresponse()
-print(response.status, response.reason)
-data = response.read()
-print(data)
+if response.reason == 'OK':
+    print(' Authentication on Freemius it\'s working! Hooray!')
+else:
+    print(' Authentication on Freemius is not working!')
+    exit
+print(sys.argv)
+
+subprocess.call("./package.sh " + sys.argv[1] + " " + sys.argv[2], shell=True)
+#data = response.read()
