@@ -41,10 +41,13 @@ def get_plugin_version(path):
     stabletag = subprocess.check_output('grep "^Stable tag:" ' + sys.argv[1] + '/README.txt', shell=True).decode("utf-8") 
     return stabletag.replace('Stable tag:','').replace(' ', '').rstrip()
 
-#Do the ping!
-conn = HTTPConnection('api.freemius.com')
-conn.request('GET', '/v1/ping.json', generate_request_parameter(), create_token_header())
+token = create_token_header()
+#Do the ping
+conn = HTTPConnection('sandbox-api.freemius.com')
+conn.request('GET', '/v1/ping.json', generate_request_parameter(), token)
 response = conn.getresponse()
+# To reuse the same connection
+response.read()
 if response.reason == 'OK':
     print(' Authentication on Freemius it\'s working! Hooray!')
 else:
@@ -63,8 +66,9 @@ if not os.path.isfile('./' + plugin_slug + '-' + get_plugin_version(sys.argv[1])
 else:
     print(' Already available a ' + plugin_slug + '-' + get_plugin_version(sys.argv[1]) + '.zip file, not packaging again')
 
-conn.request('GET', '/v1/plugins.json', generate_request_parameter({'plugin_id':config.get(plugin_slug, 'id')}), create_token_header())
+conn.request('GET', '/v1/developers/' + config.get('Login', 'user') + '/plugins/' + config.get(plugin_slug, 'id') + '/tags.json', generate_request_parameter(), token)
 response = conn.getresponse()
+print(response.reason)
 if response.reason == 'OK':
     print(response.read())
     
