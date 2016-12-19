@@ -26,7 +26,7 @@ def create_token_header():
     """ Create an header http://docs.freemius.apiary.io/#introduction/the-authentication-header """
     string_to_sign = "GET\n"+\
                      "application/x-www-form-urlencoded\n"+\
-                     datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
+                     datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f")
     signature = {
                  'FS ': config.get('Login', 'user') + ':' + config.get('Login', 'pubkey') + ':' + create_signature(string_to_sign)
     }
@@ -42,10 +42,10 @@ def get_plugin_version(path):
     stabletag = subprocess.check_output('grep "^Stable tag:" ' + sys.argv[1] + '/README.txt', shell=True).decode("utf-8") 
     return stabletag.replace('Stable tag:','').replace(' ', '').rstrip()
 
-token = create_token_header()
 #Do the ping
 conn = HTTPConnection('sandbox-api.freemius.com')
-conn.request('GET', '/v1/ping.json', generate_request_parameter(), token)
+conn.request('GET', '/v1/ping.json', generate_request_parameter(), create_token_header())
+print(create_token_header())
 response = conn.getresponse()
 # To reuse the same connection
 response.read()
@@ -66,10 +66,10 @@ if not os.path.isfile('./' + plugin_slug + '-' + get_plugin_version(sys.argv[1])
     subprocess.call("./package.sh " + packagecommands, shell=True)
 else:
     print(' Already available a ' + plugin_slug + '-' + get_plugin_version(sys.argv[1]) + '.zip file, not packaging again')
-
-conn.request('GET', '/v1/developers/' + config.get('Login', 'user') + '/plugins/' + config.get(plugin_slug, 'id') + '/tags.json', generate_request_parameter(), token)
+print(create_token_header())
+conn.request('GET', '/v1/developers/' + config.get('Login', 'user') + '/plugins/' + config.get(plugin_slug, 'id') + '/tags.json', generate_request_parameter(), create_token_header())
 response = conn.getresponse()
-print(response.reason)
+print(response.read())
 if response.reason == 'OK':
     print(response.read())
     
