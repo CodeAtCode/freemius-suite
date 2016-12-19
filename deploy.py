@@ -2,7 +2,7 @@
 import sys, configparser,urllib3,subprocess, os.path
 from _sha1 import sha1
 from base64 import b64encode
-import time
+from datetime import datetime
 from http.client import HTTPConnection
 import hmac
 
@@ -23,11 +23,12 @@ def create_signature(string_to_sign):
     return b64encode(hmac.new(config.get('Login', 'secretkey').encode('utf-8'), string_to_sign.encode('utf-8'), sha1).digest()).decode()
 
 def create_token_header(url=None):
-    url = url or ''
     """ Create an header http://docs.freemius.apiary.io/#introduction/the-authentication-header """
-    string_to_sign = url + "\n" + str(int(time.time() * 1000)) + "\n"
+    url = url or ''
+    string_to_sign = url + "\n" + datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S %z') + "+0000 \n"
+    print(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S %z') + '+0000')
     signature = {
-                 'FS ': config.get('Login', 'user') + ':' + config.get('Login', 'pubkey') + ':' + create_signature(string_to_sign)
+                 'Authorization':'FS ' + config.get('Login', 'user') + ':' + config.get('Login', 'pubkey') + ':' + create_signature(string_to_sign)
     }
     return signature
 
@@ -45,7 +46,6 @@ def get_plugin_version(path):
 conn = HTTPConnection('sandbox-api.freemius.com')
 url = '/v1/ping.json'
 conn.request('GET', url, generate_request_parameter(), create_token_header(url))
-
 response = conn.getresponse()
 # To reuse the same connection
 response.read()
