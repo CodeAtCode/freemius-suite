@@ -1,14 +1,18 @@
 #!/usr/bin/python3
-import sys, configparser,urllib3,subprocess
+import sys, configparser,urllib3,subprocess, os.path
 from _sha1 import sha1
 from base64 import b64encode
 from datetime import datetime
 from http.client import HTTPConnection
 import hmac
 
-# Load configuration
-config = configparser.RawConfigParser()
-config.readfp(open('config.ini')) 
+if os.path.isfile('config.ini'):
+    # Load configuration
+    config = configparser.RawConfigParser()
+    config.readfp(open('config.ini')) 
+else:
+    print('Configuration file is missing!')
+    sys.exit()
 
 def create_signature(string_to_sign):
     """ Create the signature for HMAC-SHA1 """
@@ -37,14 +41,15 @@ if response.reason == 'OK':
     print(' Authentication on Freemius it\'s working! Hooray!')
 else:
     print(' Authentication on Freemius is not working!')
-    exit
+    sys.exit()
     
-packagecommands = ''
-if len(sys.argv) > 1:
-    packagecommands = sys.argv[1] + " " + sys.argv[2]
-elif len(sys.argv) > 0:
-    packagecommands = sys.argv[1]
-subprocess.call("./package.sh " + packagecommands, shell=True)
+if sys.argv[1] != 'nopack':
+    packagecommands = ''
+    if len(sys.argv) > 1:
+        packagecommands = sys.argv[1] + " " + sys.argv[2]
+    elif len(sys.argv) > 0:
+        packagecommands = sys.argv[1]
+    subprocess.call("./package.sh " + packagecommands, shell=True)
 
 conn.request('GET', '/v1/plugins.json', generate_request_parameter({'plugin_id':config.get('Login', 'pubkey')}), create_token_header())
 response = conn.getresponse()
