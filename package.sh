@@ -13,7 +13,7 @@ if [ -z $2 ]; then
     fileroot=$(basename "$pluginfolder")
 fi
 
-r=$(( $RANDOM % 10 ));
+r=$(( RANDOM % 10 ));
 foldername="$originalfoldername-$r"
 
 echo "-Generating the zip in progress..."
@@ -31,6 +31,7 @@ rm -rf ./.directory
 rm -rf ./node_modules
 rm -rf ./wp-config-test.php
 rm -rf ./*.yml
+rm -rf ./*.neon
 rm -rf ./package.json
 rm -rf ./Gruntfile.js
 rm -rf ./composer.lock
