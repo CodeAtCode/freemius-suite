@@ -32,7 +32,8 @@ def create_token_header():
     }
     return signature
 
-def generate_request_parameter(parameter={}):
+def generate_request_parameter(parameter=None):
+    parameter = parameter or {}
     devid = {'developer_id': config.get('Login', 'user')}
     # Merge the dicts
     return urllib3.request.urlencode(dict(list(parameter.items()) + list(devid.items())))

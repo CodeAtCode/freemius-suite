@@ -3,14 +3,14 @@
 # Second parameter not mandatory is the root file of the plugin, if not set use the foldername of the plugin (not require the extension of the file)
 
 pluginfolder=$1
-originalfoldername=`basename $pluginfolder`
+originalfoldername=$(basename "$pluginfolder")
 wd=$PWD
 if [ -z $1 ]; then
-    originalfoldername=`basename $PWD`
+    originalfoldername=$(basename "$PWD")
 fi
 fileroot=$2
 if [ -z $2 ]; then
-    fileroot=`basename $pluginfolder`
+    fileroot=$(basename "$pluginfolder")
 fi
 
 r=$(( $RANDOM % 10 ));
@@ -18,11 +18,11 @@ foldername="$originalfoldername-$r"
 
 echo "-Generating the zip in progress..."
 
-cp -ar $pluginfolder /tmp/$foldername
+cp -ar "$pluginfolder" /tmp/"$foldername"
 
-cd /tmp/$foldername
+cd /tmp/$foldername || exit
 
-version=`grep "^Stable tag:" README.txt | awk -F' ' '{print $NF}'`
+version=$(grep "^Stable tag:" README.txt | awk -F' ' '{print $NF}')
 
 echo "-Cleaning in Progress..."
 rm -rf ./.git*
@@ -47,7 +47,7 @@ rm -rf ./vendor
 rm -rf ./tests
 
 #Detect if there are composer dependencies
-dep=`cat composer.json | python -c "import json,sys;sys.stdout.write('true') if 'require' in json.load(sys.stdin)==False else sys.stdout.write('')"`7
+dep=$(cat composer.json | python -c "import json,sys;sys.stdout.write('true') if 'require' in json.load(sys.stdin)==False else sys.stdout.write('')")
 if [ ! -z ${dep// } ]; then
     echo "-Downloading clean composer dependencies..."
     composer update --no-dev &> /dev/null
@@ -59,17 +59,17 @@ fi
 if [ -f './includes/Fake_Freemius.php' ]; then
     echo "-Cleaning for Freemius"
     rm -rf ./includes/Fake_Freemius.php
-    rowff=`grep -n "/includes/Fake_Freemius.php" $fileroot.php | awk -F: '{print $1}'`
+    rowff=$(grep -n "/includes/Fake_Freemius.php" "$fileroot".php | awk -F: '{print $1}')
     rowff+='d'
-    sed -i "$rowff" $fileroot.php
+    sed -i "$rowff" "$fileroot".php
     #If Freemius SDK is commented remove the comments
-    rowfs=`grep -n "/includes/freemius/start.php" $fileroot.php | awk -F: '{print $1}'`
+    rowfs=$(grep -n "/includes/freemius/start.php" "$fileroot".php | awk -F: '{print $1}')
     rowfs+='s'
-    sed -i "$rowfs/\/\///" $fileroot.php
+    sed -i "$rowfs/\/\///" "$fileroot".php
 fi
 
-zip -r $wd/$originalfoldername-$version.zip ./ &> /dev/null
+zip -r "$wd"/"$originalfoldername"-"$version".zip ./ &> /dev/null
 
-rm -rf /tmp/$foldername
+rm -rf /tmp/"$foldername"
 
 echo "-Done!"
