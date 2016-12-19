@@ -2,7 +2,7 @@
 import sys, configparser,urllib3,subprocess, os.path
 from _sha1 import sha1
 from base64 import b64encode
-from datetime import datetime
+import time
 from http.client import HTTPConnection
 import hmac
 
@@ -22,11 +22,10 @@ def create_signature(string_to_sign):
     """ Create the signature for HMAC-SHA1 """
     return b64encode(hmac.new(config.get('Login', 'secretkey').encode('utf-8'), string_to_sign.encode('utf-8'), sha1).digest()).decode()
 
-def create_token_header():
+def create_token_header(url=None):
+    url = url or ''
     """ Create an header http://docs.freemius.apiary.io/#introduction/the-authentication-header """
-    string_to_sign = "GET\n"+\
-                     "application/x-www-form-urlencoded\n"+\
-                     datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f")
+    string_to_sign = url + "\n" + str(int(time.time() * 1000)) + "\n"
     signature = {
                  'FS ': config.get('Login', 'user') + ':' + config.get('Login', 'pubkey') + ':' + create_signature(string_to_sign)
     }
@@ -44,8 +43,9 @@ def get_plugin_version(path):
 
 #Do the ping
 conn = HTTPConnection('sandbox-api.freemius.com')
-conn.request('GET', '/v1/ping.json', generate_request_parameter(), create_token_header())
-print(create_token_header())
+url = '/v1/ping.json'
+conn.request('GET', url, generate_request_parameter(), create_token_header(url))
+
 response = conn.getresponse()
 # To reuse the same connection
 response.read()
@@ -66,8 +66,9 @@ if not os.path.isfile('./' + plugin_slug + '-' + get_plugin_version(sys.argv[1])
     subprocess.call("./package.sh " + packagecommands, shell=True)
 else:
     print(' Already available a ' + plugin_slug + '-' + get_plugin_version(sys.argv[1]) + '.zip file, not packaging again')
-print(create_token_header())
-conn.request('GET', '/v1/developers/' + config.get('Login', 'user') + '/plugins/' + config.get(plugin_slug, 'id') + '/tags.json', generate_request_parameter(), create_token_header())
+
+url = '/v1/developers/' + config.get('Login', 'user') + '/plugins/' + config.get(plugin_slug, 'id') + '/tags.json'
+conn.request('GET', url, generate_request_parameter(), create_token_header(url))
 response = conn.getresponse()
 print(response.read())
 if response.reason == 'OK':
