@@ -20,7 +20,7 @@ if len(sys.argv) == 0:
 
 def create_signature(string_to_sign):
     """ Create the signature for HMAC-SHA1 """
-    return b64encode(hmac.new(config.get('Login', 'secretkey').encode('utf-8'), string_to_sign.encode('utf-8'), sha256).digest()).decode()
+    return b64encode(hmac.new(config.get('Login', 'secretkey').encode('utf-8'), string_to_sign.encode('utf-8'), sha256).digest()).decode('utf-8')
 
 def create_token_header(url=None):
     """ Create an header http://docs.freemius.apiary.io/#introduction/the-authentication-header """
