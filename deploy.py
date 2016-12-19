@@ -13,6 +13,10 @@ if os.path.isfile('config.ini'):
 else:
     print('Configuration file is missing!')
     sys.exit()
+    
+if len(sys.argv) == 0:
+    print('The folder of the script is required!')
+    sys.exit()
 
 def create_signature(string_to_sign):
     """ Create the signature for HMAC-SHA1 """
@@ -33,6 +37,10 @@ def generate_request_parameter(parameter={}):
     # Merge the dicts
     return urllib3.request.urlencode(dict(list(parameter.items()) + list(devid.items())))
 
+def get_plugin_version(path):
+    stabletag = subprocess.check_output('grep "^Stable tag:" ' + sys.argv[1] + '/README.txt', shell=True).decode("utf-8") 
+    return stabletag.replace('Stable tag:','').replace(' ', '').rstrip()
+
 #Do the ping!
 conn = HTTPConnection('api.freemius.com')
 conn.request('GET', '/v1/ping.json', generate_request_parameter(), create_token_header())
@@ -43,15 +51,19 @@ else:
     print(' Authentication on Freemius is not working!')
     sys.exit()
     
-if sys.argv[1] != 'nopack':
-    packagecommands = ''
-    if len(sys.argv) > 1:
-        packagecommands = sys.argv[1] + " " + sys.argv[2]
-    elif len(sys.argv) > 0:
-        packagecommands = sys.argv[1]
-    subprocess.call("./package.sh " + packagecommands, shell=True)
+packagecommands = ''
+plugin_slug = os.path.basename(os.path.dirname(sys.argv[1]))
+if len(sys.argv) > 2:
+    packagecommands = sys.argv[1] + " " + sys.argv[2]
+elif len(sys.argv) > 1:
+    packagecommands = sys.argv[1]
 
-conn.request('GET', '/v1/plugins.json', generate_request_parameter({'plugin_id':config.get('Login', 'pubkey')}), create_token_header())
+if not os.path.isfile('./' + plugin_slug + '-' + get_plugin_version(sys.argv[1]) + '.zip'):
+    subprocess.call("./package.sh " + packagecommands, shell=True)
+else:
+    print(' Already available a ' + plugin_slug + '-' + get_plugin_version(sys.argv[1]) + '.zip file, not packaging again')
+
+conn.request('GET', '/v1/plugins.json', generate_request_parameter({'plugin_id':config.get(plugin_slug, 'id')}), create_token_header())
 response = conn.getresponse()
 if response.reason == 'OK':
     print(response.read())
