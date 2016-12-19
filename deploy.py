@@ -30,7 +30,7 @@ def generate_request_parameter(parameter={}):
     return urllib3.request.urlencode(dict(list(parameter.items()) + list(devid.items())))
 
 #Do the ping!
-conn = HTTPConnection('fast-api.freemius.com')
+conn = HTTPConnection('api.freemius.com')
 conn.request('GET', '/v1/ping.json', generate_request_parameter(), create_token_header())
 response = conn.getresponse()
 if response.reason == 'OK':
