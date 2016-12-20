@@ -20,14 +20,13 @@ if len(sys.argv) == 0:
 def create_signature(string_to_sign):
     """ Create the signature for HMAC-SHA256 """
     # Require to be a byte and not a string
-    print(string_to_sign.encode('utf-8'))
     hmacencode = hmac.new(
                           config.get('Login', 'secretkey').encode('utf-8'),
                           string_to_sign.encode('utf-8'),
                           hashlib.sha256
-                 ).digest()
-    b64 = base64.encodestring(hmacencode).decode('utf-8')
-    b64 = b64.rstrip().replace('=', '')
+                 ).hexdigest().encode('utf-8')
+    b64 = str(base64.b64encode(hmacencode))
+    b64 = b64.rstrip().replace('=', '').replace('+/', '-_')[:-1][2:]
     return b64
 
 
@@ -47,7 +46,7 @@ def token_header(url=None):
                  create_signature(string_to_sign),
                  'Date':
                  datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000'),
-                 'Content-Type': 'application/json'
+                 'Content-Type': ''
     }
     return signature
 
@@ -69,7 +68,7 @@ def get_plugin_version(path):
 # Do the ping
 conn = HTTPConnection('sandbox-api.freemius.com')
 url = '/v1/ping.json'
-conn.request('GET', url, generate_req_parameters(), token_header(url))
+conn.request('GET', url, generate_req_parameters(), {})
 response = conn.getresponse()
 # To reuse the same connection
 response.read()
