@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import sys, configparser, urllib3, subprocess, os.path
-from _sha256 import sha256
-from base64 import b64encode
+import hashlib
+import base64
 from datetime import datetime
 from http.client import HTTPConnection
 import hmac
@@ -20,21 +20,23 @@ if len(sys.argv) == 0:
 
 
 def create_signature(string_to_sign):
-    """ Create the signature for HMAC-SHA1 """
-    return b64encode(
-                     hmac.new(
-                              config.get('Login', 'secretkey').encode('utf-8'),
-                              string_to_sign.encode('utf-8'),
-                              sha256
-                              ).digest()
-                     ).decode('utf-8')
+    """ Create the signature for HMAC-SHA256 """
+    # Require to be a byte and not a string
+    hmacencode = hmac.new(
+                          config.get('Login', 'secretkey').encode('utf-8'),
+                          string_to_sign.encode('utf-8'),
+                          hashlib.sha256
+                 ).digest()
+    b64 = base64.encodestring(hmacencode).decode('utf-8')
+    b64 = b64.rstrip().replace('=', '')
+    return b64
 
 
 def token_header(url=None):
     """ Create an header
     http://docs.freemius.apiary.io/#introduction/the-authentication-header """
     url = url or ''
-    string_to_sign = "\n\napplication/json\n" +\
+    string_to_sign = "GET\n\napplication/json\n" +\
         datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000') + "\n" +\
         url + "\n"
     signature = {
@@ -88,9 +90,8 @@ if not os.path.isfile('./' + packagename):
     subprocess.call("./package.sh " + packagecommands, shell=True)
 else:
     print(' Already available a ' + packagename + ' file, not packaging again')
-
 url = '/v1/developers/' + config.get('Login', 'user') + '/plugins/' + config.get(plugin_slug, 'id') + '/tags.json'
-conn.request('GET', url, generate_req_parameters(), token_header(url))
+conn.request('GET', url, '', token_header(url))
 response = conn.getresponse()
 print(response.read())
 if response.reason == 'OK':
