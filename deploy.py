@@ -35,7 +35,10 @@ def token_header(url=None):
     """ Create an header
     http://docs.freemius.apiary.io/#introduction/the-authentication-header """
     url = url or ''
-    string_to_sign = "GET\n\napplication/json\n" +\
+    # HTTP Method, MD5 Content on PUT/POST or empty for GET,
+    # application/json only for PUT/POST or empty for GET,
+    # Date and url
+    string_to_sign = "GET\n\n\n" +\
         datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000') + "\n" + url
     signature = {
                  'Authorization':
