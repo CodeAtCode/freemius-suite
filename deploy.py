@@ -1,10 +1,8 @@
 #!/usr/bin/python3
-import sys, configparser, urllib3, subprocess, os.path
-import hashlib
-import base64
+import sys, configparser, urllib3, subprocess
+import hashlib, hmac, base64, os.path
 from datetime import datetime
 from http.client import HTTPConnection
-import hmac
 
 if os.path.isfile('config.ini'):
     # Load configuration
@@ -22,6 +20,8 @@ if len(sys.argv) == 0:
 def create_signature(string_to_sign):
     """ Create the signature for HMAC-SHA256 """
     # Require to be a byte and not a string
+    print(config.get('Login', 'secretkey').encode('utf-8'))
+    print(string_to_sign.encode('utf-8'))
     hmacencode = hmac.new(
                           config.get('Login', 'secretkey').encode('utf-8'),
                           string_to_sign.encode('utf-8'),
@@ -73,9 +73,9 @@ response = conn.getresponse()
 # To reuse the same connection
 response.read()
 if response.reason == 'OK':
-    print(' Authentication on Freemius it\'s working! Hooray!')
+    print(' Service online! Hooray!')
 else:
-    print(' Authentication on Freemius is not working!')
+    print(' Service not online!')
     sys.exit()
 # Prepare the command
 packagecommands = ''
@@ -90,6 +90,7 @@ if not os.path.isfile('./' + packagename):
     subprocess.call("./package.sh " + packagecommands, shell=True)
 else:
     print(' Already available a ' + packagename + ' file, not packaging again')
+    
 url = '/v1/developers/' + config.get('Login', 'user') + '/plugins/' + config.get(plugin_slug, 'id') + '/tags.json'
 conn.request('GET', url, '', token_header(url))
 response = conn.getresponse()
