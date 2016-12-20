@@ -20,7 +20,6 @@ if len(sys.argv) == 0:
 def create_signature(string_to_sign):
     """ Create the signature for HMAC-SHA256 """
     # Require to be a byte and not a string
-    print(config.get('Login', 'secretkey').encode('utf-8'))
     print(string_to_sign.encode('utf-8'))
     hmacencode = hmac.new(
                           config.get('Login', 'secretkey').encode('utf-8'),
@@ -37,8 +36,7 @@ def token_header(url=None):
     http://docs.freemius.apiary.io/#introduction/the-authentication-header """
     url = url or ''
     string_to_sign = "GET\n\napplication/json\n" +\
-        datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000') + "\n" +\
-        url + "\n"
+        datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000') + "\n" + url
     signature = {
                  'Authorization':
                  'FS ' + config.get('Login', 'user') + ':' +
@@ -90,7 +88,7 @@ if not os.path.isfile('./' + packagename):
     subprocess.call("./package.sh " + packagecommands, shell=True)
 else:
     print(' Already available a ' + packagename + ' file, not packaging again')
-    
+
 url = '/v1/developers/' + config.get('Login', 'user') + '/plugins/' + config.get(plugin_slug, 'id') + '/tags.json'
 conn.request('GET', url, '', token_header(url))
 response = conn.getresponse()
