@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import sys, configparser,urllib3,subprocess, os.path
+import sys, configparser, urllib3, subprocess, os.path
 from _sha256 import sha256
 from base64 import b64encode
 from datetime import datetime
@@ -9,43 +9,64 @@ import hmac
 if os.path.isfile('config.ini'):
     # Load configuration
     config = configparser.RawConfigParser()
-    config.readfp(open('config.ini')) 
+    config.readfp(open('config.ini'))
 else:
     print('Configuration file is missing!')
     sys.exit()
-    
+
 if len(sys.argv) == 0:
     print('The folder of the script is required!')
     sys.exit()
 
+
 def create_signature(string_to_sign):
     """ Create the signature for HMAC-SHA1 """
-    return b64encode(hmac.new(config.get('Login', 'secretkey').encode('utf-8'), string_to_sign.encode('utf-8'), sha256).digest()).decode('utf-8')
+    return b64encode(
+                     hmac.new(
+                              config.get('Login', 'secretkey').encode('utf-8'),
+                              string_to_sign.encode('utf-8'),
+                              sha256
+                              ).digest()
+                     ).decode('utf-8')
 
-def create_token_header(url=None):
-    """ Create an header http://docs.freemius.apiary.io/#introduction/the-authentication-header """
+
+def token_header(url=None):
+    """ Create an header
+    http://docs.freemius.apiary.io/#introduction/the-authentication-header """
     url = url or ''
-    string_to_sign = "\n\napplication/json\n" + datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000') + "\n" + url + "\n"
+    string_to_sign = "\n\napplication/json\n" +\
+        datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000') + "\n" +\
+        url + "\n"
     signature = {
-                 'Authorization': 'FS ' + config.get('Login', 'user') + ':' + config.get('Login', 'pubkey') + ':' + create_signature(string_to_sign),
-                 'Date': datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000')
+                 'Authorization':
+                 'FS ' + config.get('Login', 'user') + ':' +
+                 config.get('Login', 'pubkey') + ':' +
+                 create_signature(string_to_sign),
+                 'Date':
+                 datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000'),
+                 'Content-Type': 'application/json'
     }
     return signature
 
-def generate_request_parameter(parameter=None):
+
+def generate_req_parameters(parameter=None):
     parameter = parameter or {}
     devid = {'developer_id': config.get('Login', 'user')}
     # Merge the dicts
-    return urllib3.request.urlencode(dict(list(parameter.items()) + list(devid.items())))
+    merge = dict(list(parameter.items()) + list(devid.items()))
+    return urllib3.request.urlencode(merge)
+
 
 def get_plugin_version(path):
-    stabletag = subprocess.check_output('grep "^Stable tag:" ' + sys.argv[1] + '/README.txt', shell=True).decode("utf-8") 
-    return stabletag.replace('Stable tag:','').replace(' ', '').rstrip()
+    command = 'grep "^Stable tag:" ' + sys.argv[1] + '/README.txt'
+    stabletag = subprocess.check_output(command, shell=True).decode("utf-8")
+    return stabletag.replace('Stable tag:', '').replace(' ', '').rstrip()
+
 
 # Do the ping
 conn = HTTPConnection('sandbox-api.freemius.com')
 url = '/v1/ping.json'
-conn.request('GET', url, generate_request_parameter(), create_token_header(url))
+conn.request('GET', url, generate_req_parameters(), token_header(url))
 response = conn.getresponse()
 # To reuse the same connection
 response.read()
@@ -62,15 +83,15 @@ if len(sys.argv) > 2:
 elif len(sys.argv) > 1:
     packagecommands = sys.argv[1]
 # Package the plugin
-if not os.path.isfile('./' + plugin_slug + '-' + get_plugin_version(sys.argv[1]) + '.zip'):
+packagename = plugin_slug + '-' + get_plugin_version(sys.argv[1]) + '.zip'
+if not os.path.isfile('./' + packagename):
     subprocess.call("./package.sh " + packagecommands, shell=True)
 else:
-    print(' Already available a ' + plugin_slug + '-' + get_plugin_version(sys.argv[1]) + '.zip file, not packaging again')
+    print(' Already available a ' + packagename + ' file, not packaging again')
 
 url = '/v1/developers/' + config.get('Login', 'user') + '/plugins/' + config.get(plugin_slug, 'id') + '/tags.json'
-conn.request('GET', url, generate_request_parameter(), create_token_header(url))
+conn.request('GET', url, generate_req_parameters(), token_header(url))
 response = conn.getresponse()
 print(response.read())
 if response.reason == 'OK':
     print(response.read())
-    
