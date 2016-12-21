@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import sys, configparser, urllib3, subprocess
-import hashlib, hmac, base64, os.path, json
+import hashlib, hmac, base64, os.path, json, random
 from datetime import datetime
 from http.client import HTTPConnection
 
@@ -30,16 +30,17 @@ def create_signature(string_to_sign):
     return b64
 
 
-def token_header(url=None, method='GET'):
+def token_header(url='', method='GET', contenttype='application/json', body=''):
     """ Create an header
     http://docs.freemius.apiary.io/#introduction/the-authentication-header """
-    url = url or ''
-    contenttype = 'application/json'
     # HTTP Method, MD5 Content on PUT/POST or empty for GET,
     # application/json only for PUT/POST or empty for GET,
     # Date and url
-    string_to_sign = method + "\n\n\n" +\
+    if body != '':
+        body = str(hashlib.md5(body.encode('utf-8')).hexdigest().encode('utf-8'))[:-1][2:]
+    string_to_sign = method + "\n" + body + "\n\n" +\
         datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000') + "\n" + url
+    print(contenttype)
     if method == 'GET':
         contenttype = ''
     signature = {
@@ -69,7 +70,7 @@ def get_plugin_version(path):
 
 
 # Do the ping
-conn = HTTPConnection('sandbox-api.freemius.com')
+conn = HTTPConnection('fast-sandbox-api.freemius.com')
 url = '/v1/ping.json'
 conn.request('GET', url, generate_req_parameters(), {})
 response = conn.getresponse()
@@ -109,7 +110,7 @@ if response.reason == 'OK':
               (tags['version'], tags['requires_platform_version'],
                tags['tested_up_to_version'], tags['created']))
         if tags['version'] == version:
-            print('Version %s is already available on Freemius!' % version)
+            print("\nVersion %s is already available on Freemius!" % version)
             sys.exit()
 else:
     print('Plugin not exist or the authentication data are wrong.')
@@ -117,16 +118,20 @@ else:
 # Deploy the zip
 print("--------------------")
 print(' Deploying in progress of the %s' % version)
+boundary = '-----' + str(int(random.random()*1e10))
 url = devurl + '/tags.json'
-body = "-----BOUNDARY\nContent-Disposition: form-data;name='add_contributor'\n" \
-"\n\ntrue\n-----BOUNDARY" \
-"Content-Disposition: form-data; name='file'; filename='%s'\n" \
-"Content-Type: application/zip\nContent-Transfer-Encoding: base64" \
-"\n%s\n-----BOUNDARY--"
+body = boundary + "\nContent-Disposition: form-data;" \
+    "\n\n{\"file\":{},\"add_contributor\":false}\n" + boundary + "\n" \
+    "Content-Disposition: form-data; name='file'; filename='%s'\n" \
+    "Content-Type: application/zip\nContent-Transfer-Encoding: base64" \
+    "\n\n%s\n" + boundary
 # Get the zip content as base64
 with open(packagename, "rb") as zipcontent:
-    b64zipcontent = base64.b64encode(zipcontent.read())
+    b64zipcontent = zipcontent.read()
+#    b64zipcontent = str(base64.b64encode(zipcontent.read()))
+#    b64zipcontent = b64zipcontent.rstrip().replace('=', '').replace('+/', '-_')[:-1][2:]
 body = body % (packagename, b64zipcontent)
-conn.request('POST', url, body, token_header(url, 'POST'))
+conn.request('POST', url, body, token_header(url, 'POST', 'multipart/form-data; boundary=' + boundary, body))
 response = conn.getresponse()
 print(response.read())
+print(" Deploying done!")
