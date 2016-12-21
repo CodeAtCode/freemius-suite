@@ -42,7 +42,6 @@ def token_header(url, method='GET', contenttype='application/json', body=''):
         body = functions.bytes_to_string(body)
     string_to_sign = method + "\n" + body + "\n" + contenttype + "\n" +\
         datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000') + "\n" + url
-    print(string_to_sign)
     signature = {
                  'Authorization':
                  'FS ' + config.ini.get('Login', 'user') + ':' +

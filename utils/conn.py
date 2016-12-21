@@ -1,6 +1,6 @@
 from http.client import HTTPConnection
-from utils import auth, config, wordpress
-import sys, json, random
+from utils import auth, config, wordpress, functions
+import sys, json
 
 
 def conn():
@@ -60,19 +60,20 @@ def deploy_plugin():
     packagename = wordpress.get_zip_name()
     print("--------------------")
     print(' Deploying in progress of the %s' % version)
-    boundary = '-----' + str(int(random.random()*1e10))
+    boundary = functions.boundary()
     url = devurl('tags.json')
-    body = boundary + "\nContent-Disposition: form-data;" \
+    body = boundary + "\nContent-Disposition: form-data; name=\"data\"" \
         "\n\n{\"file\":{},\"add_contributor\":false}\n" + boundary + "\n" \
         "Content-Disposition: form-data; name='file'; filename='%s'\n" \
-        "Content-Type: application/zip\nContent-Transfer-Encoding: base64" \
-        "\n\n%s\n" + boundary
+        "Content-Type: application/zip\n\n%s\n" + boundary + "\n"
     # Get the zip content as base64
-    with open(packagename, "rb") as zipcontent:
-        b64zipcontent = zipcontent.read()
+    zipcontent = open(packagename, "rb").read()
+#        b64zipcontent = zipcontent.read()
     #    b64zipcontent = str(base64.b64encode(zipcontent.read()))
     #    b64zipcontent = b64zipcontent.rstrip().replace('=', '').replace('+/', '-_')[:-1][2:]
-    body = body % (packagename, b64zipcontent)
+    zipcontent = functions.bytes_to_string(zipcontent)
+    zipcontent = zipcontent.replace('\n', '')
+    body = body % (packagename, zipcontent)
     contenttype = 'multipart/form-data; boundary=' + boundary
     header = auth.token_header(url, 'POST', contenttype, body)
     fconn.request('POST', url, body, header)
