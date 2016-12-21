@@ -30,15 +30,18 @@ def create_signature(string_to_sign):
     return b64
 
 
-def token_header(url=None):
+def token_header(url=None, method='GET'):
     """ Create an header
     http://docs.freemius.apiary.io/#introduction/the-authentication-header """
     url = url or ''
+    contenttype = 'application/json'
     # HTTP Method, MD5 Content on PUT/POST or empty for GET,
     # application/json only for PUT/POST or empty for GET,
     # Date and url
-    string_to_sign = "GET\n\n\n" +\
+    string_to_sign = method + "\n\n\n" +\
         datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000') + "\n" + url
+    if method == 'GET':
+        contenttype = ''
     signature = {
                  'Authorization':
                  'FS ' + config.get('Login', 'user') + ':' +
@@ -46,7 +49,7 @@ def token_header(url=None):
                  create_signature(string_to_sign),
                  'Date':
                  datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000'),
-                 'Content-Type': ''
+                 'Content-Type': contenttype
     }
     return signature
 
@@ -91,14 +94,14 @@ if not os.path.isfile('./' + packagename):
     subprocess.call("./package.sh " + packagecommands, shell=True)
 else:
     print(' Already available a ' + packagename + ' file, not packaging again')
-
+# The first part of the url is always the same
 devurl = '/v1/developers/' + config.get('Login', 'user') +\
          '/plugins/' + config.get(plugin_slug, 'id')
-
+# Print the tags list and check if already on Freemius
+print("\n--------------------")
 url = devurl + '/tags.json'
 conn.request('GET', url, '', token_header(url))
 response = conn.getresponse()
-print("\n--------------------")
 if response.reason == 'OK':
     needjson = json.loads(response.read().decode('utf-8'))
     for tags in needjson['tags']:
@@ -111,4 +114,19 @@ if response.reason == 'OK':
 else:
     print('Plugin not exist or the authentication data are wrong.')
     sys.exit()
-
+# Deploy the zip
+print("--------------------")
+print(' Deploying in progress of the %s' % version)
+url = devurl + '/tags.json'
+body = "-----BOUNDARY\nContent-Disposition: form-data;name='add_contributor'\n" \
+"\n\ntrue\n-----BOUNDARY" \
+"Content-Disposition: form-data; name='file'; filename='%s'\n" \
+"Content-Type: application/zip\nContent-Transfer-Encoding: base64" \
+"\n%s\n-----BOUNDARY--"
+# Get the zip content as base64
+with open(packagename, "rb") as zipcontent:
+    b64zipcontent = base64.b64encode(zipcontent.read())
+body = body % (packagename, b64zipcontent)
+conn.request('POST', url, body, token_header(url, 'POST'))
+response = conn.getresponse()
+print(response.read())
