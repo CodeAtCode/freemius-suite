@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import sys, configparser, urllib3, subprocess
-import hashlib, hmac, base64, os.path
+import hashlib, hmac, base64, os.path, json
 from datetime import datetime
 from http.client import HTTPConnection
 
@@ -85,15 +85,30 @@ if len(sys.argv) > 2:
 elif len(sys.argv) > 1:
     packagecommands = sys.argv[1]
 # Package the plugin
-packagename = plugin_slug + '-' + get_plugin_version(sys.argv[1]) + '.zip'
+version = get_plugin_version(sys.argv[1])
+packagename = plugin_slug + '-' + version + '.zip'
 if not os.path.isfile('./' + packagename):
     subprocess.call("./package.sh " + packagecommands, shell=True)
 else:
     print(' Already available a ' + packagename + ' file, not packaging again')
 
-url = '/v1/developers/' + config.get('Login', 'user') + '/plugins/' + config.get(plugin_slug, 'id') + '/tags.json'
+devurl = '/v1/developers/' + config.get('Login', 'user') +\
+         '/plugins/' + config.get(plugin_slug, 'id')
+
+url = devurl + '/tags.json'
 conn.request('GET', url, '', token_header(url))
 response = conn.getresponse()
-print(response.read())
+print("\n--------------------")
 if response.reason == 'OK':
-    print(response.read())
+    needjson = json.loads(response.read().decode('utf-8'))
+    for tags in needjson['tags']:
+        print(' - %s require %s, tested up on %s, uploaded on %s' %
+              (tags['version'], tags['requires_platform_version'],
+               tags['tested_up_to_version'], tags['created']))
+        if tags['version'] == version:
+            print('Version %s is already available on Freemius!' % version)
+            sys.exit()
+else:
+    print('Plugin not exist or the authentication data are wrong.')
+    sys.exit()
+
