@@ -36,13 +36,13 @@ def token_header(url='', method='GET', contenttype='application/json', body=''):
     # HTTP Method, MD5 Content on PUT/POST or empty for GET,
     # application/json only for PUT/POST or empty for GET,
     # Date and url
-    if body != '':
-        body = str(hashlib.md5(body.encode('utf-8')).hexdigest().encode('utf-8'))[:-1][2:]
-    string_to_sign = method + "\n" + body + "\n\n" +\
-        datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000') + "\n" + url
-    print(contenttype)
     if method == 'GET':
         contenttype = ''
+    if body != '':
+        body = str(hashlib.md5(body.encode('utf-8')).hexdigest().encode('utf-8'))[:-1][2:]
+    string_to_sign = method + "\n" + body + "\n" + contenttype + "\n" +\
+        datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000') + "\n" + url
+    print(string_to_sign)
     signature = {
                  'Authorization':
                  'FS ' + config.get('Login', 'user') + ':' +
