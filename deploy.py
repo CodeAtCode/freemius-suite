@@ -9,5 +9,5 @@ wordpress.generate_package()
 # Check the tags
 conn.check_tags()
 # Deploy the zip
-#conn.deploy_plugin()
 conn.deploy_plugin()
+conn.close()

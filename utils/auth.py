@@ -32,7 +32,7 @@ def create_signature(string_to_sign):
 def get_auth_header(token, string_to_sign):
     if token:
         return 'FSA ' + config.ini.get('Login', 'user') + ':' +\
-                conn.access_token()
+                    conn.access_token()
     else:
         return 'FS ' + config.ini.get('Login', 'user') + ':' +\
                      config.ini.get('Login', 'pubkey') + ':' +\
@@ -59,6 +59,7 @@ def token_header(
                  get_auth_header(token, string_to_sign),
                  'Date':
                  datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000'),
-                 'Content-Type': contenttype
+                 'Content-Type': contenttype,
+                 'Content-Length': str (len (body))
     }
     return signature

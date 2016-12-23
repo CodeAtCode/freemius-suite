@@ -31,6 +31,11 @@ def devurl(append):
             '/' + append
 
 
+def close():
+    global fconn
+    fconn.close()
+
+
 def check_tags():
     global fconn
     # Print the tags list and check if already on Freemius
@@ -75,7 +80,6 @@ def deploy_plugin(authmethod=True):
         "\n\n{\"file\":{},\"add_contributor\":false}\n" + boundary + "\n" \
         "Content-Disposition: form-data; name='file'; filename='%s'\n" \
         "Content-Type: application/zip\n\n%s\n" + boundary + "\n"
-    print(body)
     # Get the zip content
     zipcontent = open(packagename, "rb").read()
     #    b64zipcontent = str(base64.b64encode(zipcontent))
@@ -90,3 +94,4 @@ def deploy_plugin(authmethod=True):
     response = fconn.getresponse()
     print(response.read())
     print(" Deploying done!")
+    
