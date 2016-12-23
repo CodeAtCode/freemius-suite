@@ -54,28 +54,38 @@ def check_tags():
         sys.exit()
 
 
-def deploy_plugin():
+def access_token():
+    global fconn
+    url = '/v1/developers/' + config.ini.get('Login', 'user') + '/token.json'
+    fconn.request('GET', url, '', auth.token_header(url))
+    response = fconn.getresponse()
+    print(' Get the Authorization token to switch the authentication method')
+    access = json.loads(response.read().decode('utf-8'))
+    return access['access']
+
+
+def deploy_plugin(auth=True):
     global fconn
     version = wordpress.get_plugin_version()
     packagename = wordpress.get_zip_name()
     print("--------------------")
     print(' Deploying in progress of the %s' % version)
     boundary = functions.boundary()
-    url = devurl('tags.json')
     body = boundary + "\nContent-Disposition: form-data; name=\"data\"" \
         "\n\n{\"file\":{},\"add_contributor\":false}\n" + boundary + "\n" \
         "Content-Disposition: form-data; name='file'; filename='%s'\n" \
         "Content-Type: application/zip\n\n%s\n" + boundary + "\n"
-    # Get the zip content as base64
+    # Get the zip content
     zipcontent = open(packagename, "rb").read()
-#        b64zipcontent = zipcontent.read()
-    #    b64zipcontent = str(base64.b64encode(zipcontent.read()))
+    #    b64zipcontent = str(base64.b64encode(zipcontent))
     #    b64zipcontent = b64zipcontent.rstrip().replace('=', '').replace('+/', '-_')[:-1][2:]
     zipcontent = functions.bytes_to_string(zipcontent)
     zipcontent = zipcontent.replace('\n', '')
     body = body % (packagename, zipcontent)
+    url = devurl('tags.json')
     contenttype = 'multipart/form-data; boundary=' + boundary
-    header = auth.token_header(url, 'POST', contenttype, body)
+    header = auth.token_header(url, 'POST', contenttype, body, auth)
+    print(header)
     fconn.request('POST', url, body, header)
     response = fconn.getresponse()
     print(response.read())

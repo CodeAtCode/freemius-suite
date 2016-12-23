@@ -1,5 +1,5 @@
 import urllib3, hashlib, hmac, base64
-from utils import config, functions
+from utils import config, functions, conn
 from datetime import datetime
 
 
@@ -28,8 +28,16 @@ def create_signature(string_to_sign):
                  ).hexdigest().encode('utf-8')
     return sanitize_b64_header(hmacencode)
 
+def get_auth_header(token, string_to_sign):
+    if token:
+        return 'FSA ' + config.ini.get('Login', 'user') + ':' + conn.access_token()
+    else:
+        return 'FS ' + config.ini.get('Login', 'user') + ':' +\
+                     config.ini.get('Login', 'pubkey') + ':' +\
+                     create_signature(string_to_sign)
 
-def token_header(url, method='GET', contenttype='application/json', body=''):
+
+def token_header(url, method='GET', contenttype='application/json', body='', token=False):
     """ Create an header
     http://docs.freemius.apiary.io/#introduction/the-authentication-header """
     # HTTP Method, MD5 Content on PUT/POST or empty for GET,
@@ -44,9 +52,7 @@ def token_header(url, method='GET', contenttype='application/json', body=''):
         datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000') + "\n" + url
     signature = {
                  'Authorization':
-                 'FS ' + config.ini.get('Login', 'user') + ':' +
-                 config.ini.get('Login', 'pubkey') + ':' +
-                 create_signature(string_to_sign),
+                 get_auth_header(token, string_to_sign),
                  'Date':
                  datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000'),
                  'Content-Type': contenttype

@@ -10,7 +10,7 @@ def get_plugin_version(path=''):
 
 
 def plugin_slug():
-    return os.path.basename(os.path.dirname(sys.argv[1]))
+    return os.path.basename(os.path.dirname(sys.argv[1] + '/'))
 
 
 def get_zip_name():
