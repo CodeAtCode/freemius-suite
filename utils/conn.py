@@ -64,7 +64,7 @@ def access_token():
     return access['access']
 
 
-def deploy_plugin(auth=True):
+def deploy_plugin(authmethod=True):
     global fconn
     version = wordpress.get_plugin_version()
     packagename = wordpress.get_zip_name()
@@ -75,6 +75,7 @@ def deploy_plugin(auth=True):
         "\n\n{\"file\":{},\"add_contributor\":false}\n" + boundary + "\n" \
         "Content-Disposition: form-data; name='file'; filename='%s'\n" \
         "Content-Type: application/zip\n\n%s\n" + boundary + "\n"
+    print(body)
     # Get the zip content
     zipcontent = open(packagename, "rb").read()
     #    b64zipcontent = str(base64.b64encode(zipcontent))
@@ -84,8 +85,7 @@ def deploy_plugin(auth=True):
     body = body % (packagename, zipcontent)
     url = devurl('tags.json')
     contenttype = 'multipart/form-data; boundary=' + boundary
-    header = auth.token_header(url, 'POST', contenttype, body, auth)
-    print(header)
+    header = auth.token_header(url, 'POST', contenttype, body, authmethod)
     fconn.request('POST', url, body, header)
     response = fconn.getresponse()
     print(response.read())

@@ -13,4 +13,4 @@ def cut_bytes_delimeter(text):
 
 
 def boundary():
-    return '-----' + str(int(random.random()*1e10))
+    return '-----' + str(int(random.random()*1e20))
