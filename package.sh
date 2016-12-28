@@ -48,13 +48,15 @@ rm -rf ./*.zip
 rm -rf ./vendor
 rm -rf ./tests
 
-#Detect if there are composer dependencies
-dep=$(cat composer.json | python -c "import json,sys;sys.stdout.write('true') if 'require' in json.load(sys.stdin)==False else sys.stdout.write('')")
-if [ ! -z ${dep// } ]; then
-    echo "-Downloading clean composer dependencies..."
-    composer update --no-dev &> /dev/null
-else
-    rm -rf composer.json
+if [ -f composer.json ]; then
+    #Detect if there are composer dependencies
+    dep=$(cat composer.json | python -c "import json,sys;sys.stdout.write('true') if 'require' in json.load(sys.stdin)==False else sys.stdout.write('')")
+    if [ ! -z ${dep// } ]; then
+        echo "-Downloading clean composer dependencies..."
+        composer update --no-dev &> /dev/null
+    else
+        rm -rf composer.json
+    fi
 fi
 
 #Remove Fake_Freemius - it is the only requirement for Freemius
