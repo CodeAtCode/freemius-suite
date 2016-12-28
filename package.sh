@@ -8,6 +8,7 @@ wd=$PWD
 if [ -z $1 ]; then
     pluginfolder=$wd
 fi
+originalfoldername=$(basename "$pluginfolder")
 fileroot=$2
 if [ -z $2 ]; then
     fileroot=$(basename "$pluginfolder")
