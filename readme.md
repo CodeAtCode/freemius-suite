@@ -16,6 +16,15 @@ Generate a zip in the working directory where the plugin is executed.
 * The first parameter is the plugin folder, if not set use the current working directory.
 * The second parameter is the root filename of the plugin (where there are the Plugin Header Comments) without the extension, if not set use the plugin folder name.
 
+##release.sh
+
+This script from a zip file, unzip the package and push a new version of WP SVN.  
+It use internally the string `WordPress-Plugin-Boilerplate-Powered` to find the plugin root file, so change based on your needs.
+
+`package.sh [plugin-file-zip]`
+
+* The first parameter is the zip of the plugin.
+
 ##deploy.py
 
 This script require a `config.ini` with the user id, the public key and secret key.  

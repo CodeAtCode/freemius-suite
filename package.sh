@@ -2,8 +2,7 @@
 # First parameter not mandatory is the folder of the plugin, if not set use the current working directory
 # Second parameter not mandatory is the root file of the plugin, if not set use the foldername of the plugin (not require the extension of the file)
 
-pluginfolder=$1
-originalfoldername=$(basename "$pluginfolder")
+pluginfolder=$(readlink -f $1)
 wd=$PWD
 if [ -z $1 ]; then
     pluginfolder=$wd
@@ -17,13 +16,13 @@ fi
 r=$(( RANDOM % 10 ));
 foldername="$originalfoldername-$r"
 
-echo "-Generating the zip in progress..."
-
 cp -ar "$pluginfolder" /tmp/"$foldername"
 
 cd /tmp/$foldername || exit
 
 version=$(grep "^Stable tag:" README.txt | awk -F' ' '{print $NF}')
+
+echo "-Generating the zip in progress..."
 
 echo "-Cleaning in Progress..."
 rm -rf ./.git*
@@ -72,7 +71,7 @@ if [ -f './includes/Fake_Freemius.php' ]; then
     sed -i "$rowfs/\/\///" "$fileroot".php
 fi
 
-zip -r "$wd"/"$originalfoldername"-"$version".zip ./ &> /dev/null
+zip -r "$wd"/"$fileroot"-"$version".zip ./ &> /dev/null
 
 rm -rf /tmp/"$foldername"
 
