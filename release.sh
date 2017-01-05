@@ -10,6 +10,9 @@ echo "Wait few minutes for the procedure!"
 cd /tmp/
 mkdir $wd
 unzip $file -d $extract > /dev/null
+cd $extract 
+zipfolder=$(ls -d */|head -n 1)
+cd /tmp/
 cd $wd
 
 # Get the plugin root file
@@ -27,15 +30,15 @@ echo "Cloning SVN locally"
 svn co "https://plugins.svn.wordpress.org/$wpdomain" > /dev/null
 
 echo "Copying new plugin version on SVN locally"
-cp -r ./upload/* "$wpdomain"/trunk
+cp -r "/tmp/$extract/$zipfolder/" ./"$wpdomain"/trunk/
 cp -r "$wpdomain"/trunk "$wpdomain"/tags/"$version"
 
 echo "Deploying new plugin version on SVN remote"
 cd "$wpdomain"
 svn add --force * --auto-props --parents --depth infinity -q > /dev/null
 svn ci -m "tagging version $version" > /dev/null
-
+ 
 cd /tmp/
-rm -r "./$wd"
-
+rm -fr "./$wd"
+ 
 echo "Deploy of the new version done!"
