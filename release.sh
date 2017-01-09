@@ -1,6 +1,10 @@
 #!/bin/bash
 
 file=$(readlink -f $1)
+if [[ $file =~ \.zip$ ]];
+    echo "The file $file is not a zip."
+    exit 1
+fi
 r=$(( RANDOM % 10 ));
 wd="$1-$r"
 extract="$wd/upload"
@@ -23,22 +27,22 @@ version=$(grep " * Version:" "$rootfile" | awk -F' ' '{print $NF}')
 wpdomain=$(grep " * Text Domain:" "$rootfile" | awk -F' ' '{print $NF}')
 
 if [ -z $wpdomain ]; then
-    return
+    exit 1
 fi
 
 echo "Cloning SVN locally"
 svn co "https://plugins.svn.wordpress.org/$wpdomain" > /dev/null
 
 echo "Copying new plugin version on SVN locally"
-cp -r "/tmp/$extract/$zipfolder/" ./"$wpdomain"/trunk/
-cp -r "$wpdomain"/trunk "$wpdomain"/tags/"$version"
+cp -r "/tmp/$extract/$zipfolder/*" ./"$wpdomain"/trunk/
+cp -r "./$wpdomain"/trunk "$wpdomain"/tags/"$version"
 
 echo "Deploying new plugin version on SVN remote"
 cd "$wpdomain"
 svn add --force * --auto-props --parents --depth infinity -q > /dev/null
-svn ci -m "tagging version $version" > /dev/null
+svn ci -m "tagging version $version"
  
 cd /tmp/
 rm -fr "./$wd"
- 
+echo " "
 echo "Deploy of the new version done!"
