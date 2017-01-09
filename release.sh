@@ -1,10 +1,11 @@
 #!/bin/bash
 
 file=$(readlink -f $1)
-if [[ $file =~ \.zip$ ]];
+if [[ ${file: -4} != ".zip" ]]; then
     echo "The file $file is not a zip."
     exit 1
 fi
+
 r=$(( RANDOM % 10 ));
 wd="$1-$r"
 extract="$wd/upload"
@@ -34,7 +35,7 @@ echo "Cloning SVN locally"
 svn co "https://plugins.svn.wordpress.org/$wpdomain" > /dev/null
 
 echo "Copying new plugin version on SVN locally"
-cp -r "/tmp/$extract/$zipfolder/*" ./"$wpdomain"/trunk/
+cp -r "/tmp/$extract/$zipfolder." ./"$wpdomain"/trunk
 cp -r "./$wpdomain"/trunk "$wpdomain"/tags/"$version"
 
 echo "Deploying new plugin version on SVN remote"
