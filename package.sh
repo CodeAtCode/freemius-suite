@@ -13,6 +13,10 @@ if [ -z $2 ]; then
     fileroot=$(basename "$pluginfolder")
 fi
 
+if [ ! -f $fileroot ]; then
+    exit 1
+fi
+
 r=$(( RANDOM % 10 ));
 foldername="$originalfoldername-$r"
 
@@ -32,6 +36,7 @@ rm -rf ./node_modules
 rm -rf ./wp-config-test.php
 rm -rf ./*.yml
 rm -rf ./*.neon
+rm -rf ./psalm.xml
 rm -rf ./package.json
 rm -rf ./Gruntfile.js
 rm -rf ./composer.lock
