@@ -12,6 +12,7 @@ fileroot=$2
 if [ -z $2 ]; then
     fileroot=$(basename "$pluginfolder")
 fi
+fileroot="$fileroot.php"
 
 if [ ! -f $fileroot ]; then
     exit 1
@@ -67,13 +68,13 @@ fi
 if [ -f './includes/Fake_Freemius.php' ]; then
     echo "-Cleaning for Freemius"
     rm -rf ./includes/Fake_Freemius.php
-    rowff=$(grep -n "/includes/Fake_Freemius.php" "$fileroot".php | awk -F: '{print $1}')
+    rowff=$(grep -n "/includes/Fake_Freemius.php" "$fileroot" | awk -F: '{print $1}')
     rowff+='d'
-    sed -i "$rowff" "$fileroot".php
+    sed -i "$rowff" "$fileroot"
     #If Freemius SDK is commented remove the comments
-    rowfs=$(grep -n "/includes/freemius/start.php" "$fileroot".php | awk -F: '{print $1}')
+    rowfs=$(grep -n "/includes/freemius/start.php" "$fileroot" | awk -F: '{print $1}')
     rowfs+='s'
-    sed -i "$rowfs/\/\///" "$fileroot".php
+    sed -i "$rowfs/\/\///" "$fileroot"
 fi
 
 zip -r "$wd"/"$fileroot"-"$version".zip ./ &> /dev/null
