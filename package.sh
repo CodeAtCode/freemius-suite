@@ -8,13 +8,13 @@ if [ -z $1 ]; then
     pluginfolder=$wd
 fi
 originalfoldername=$(basename "$pluginfolder")
-fileroot=$2
+packagename=$2
 if [ -z $2 ]; then
-    fileroot=$(basename "$pluginfolder")
+    packagename=$(basename "$pluginfolder")
 fi
-fileroot="$fileroot.php"
+fileroot="$packagename.php"
 
-if [ ! -f $fileroot ]; then
+if [ ! -f $packagename.php ]; then
     exit 1
 fi
 
@@ -77,7 +77,7 @@ if [ -f './includes/Fake_Freemius.php' ]; then
     sed -i "$rowfs/\/\///" "$fileroot"
 fi
 
-zip -r "$wd"/"$fileroot"-"$version".zip ./ &> /dev/null
+zip -r "$wd"/"$packagename"-"$version".zip ./ &> /dev/null
 
 rm -rf /tmp/"$foldername"
 
