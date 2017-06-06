@@ -15,6 +15,7 @@ fi
 fileroot="$packagename.php"
 
 if [ ! -f $packagename.php ]; then
+    echo "$packagename.php file missing"
     exit 1
 fi
 
