@@ -38,7 +38,7 @@ rm -rf ./node_modules
 rm -rf ./wp-config-test.php
 rm -rf ./*.yml
 rm -rf ./*.neon
-rm -rf ./*.cache
+rm -rf ./.*.cache
 rm -rf ./psalm.xml
 rm -rf ./package.json
 rm -rf ./Gruntfile.js
