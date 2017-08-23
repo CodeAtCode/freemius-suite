@@ -2,6 +2,8 @@
 # First parameter not mandatory is the folder of the plugin, if not set use the current working directory
 # Second parameter not mandatory is the root file of the plugin, if not set use the foldername of the plugin (not require the extension of the file)
 
+# Slack bash script https://gist.github.com/andkirby/67a774513215d7ba06384186dd441d9e
+
 pluginfolder=$(readlink -f $1)
 wd=$PWD
 if [ -z $1 ]; then
@@ -81,6 +83,7 @@ fi
 
 zip -r "$wd"/"$packagename"-"$version".zip ./ &> /dev/null
 
+slack-message "Package generated for $packagename at $version done!"
 rm -rf /tmp/"$foldername"
 
 echo "-Done!"

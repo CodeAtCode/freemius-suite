@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Slack bash script https://gist.github.com/andkirby/67a774513215d7ba06384186dd441d9e
+
 file=$(readlink -f $1)
 if [[ ${file: -4} != ".zip" ]]; then
     echo "The file $file is not a zip."
@@ -11,11 +13,14 @@ wd="$1-$r"
 extract="$wd/upload"
 
 echo "Deploy on SVN started!"
+
+slack-message "Deploy on WordPress SVN of $file started!"
+
 echo "Wait few minutes for the procedure!"
 cd /tmp/
 mkdir $wd
 unzip $file -d $extract > /dev/null
-cd $extract 
+cd $extract
 zipfolder=$(ls -d */|head -n 1)
 cd /tmp/
 cd $wd
@@ -42,8 +47,10 @@ echo "Deploying new plugin version on SVN remote"
 cd "$wpdomain"
 svn add --force * --auto-props --parents --depth infinity -q > /dev/null
 svn ci -m "tagging version $version"
- 
+
 cd /tmp/
+slack-message "Deploy on WordPress SVN of $file done!"
 rm -fr "./$wd"
 echo " "
 echo "Deploy of the new version done!"
+
