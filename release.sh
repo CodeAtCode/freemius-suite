@@ -14,7 +14,6 @@ extract="$wd/upload"
 
 echo "Deploy on SVN started!"
 
-slack-message "Deploy on WordPress SVN of $file started!"
 
 echo "Wait few minutes for the procedure!"
 cd /tmp/
@@ -29,6 +28,8 @@ cd $wd
 rootfile=$(grep -R "WordPress-Plugin-Boilerplate-Powered" . | awk -F: '{print $1}')
 # Get plugin version
 version=$(grep " * Version:" "$rootfile" | awk -F' ' '{print $NF}')
+
+slack-message "Deploy on WordPress SVN of $ started!"
 # Get the domain for WP SVN
 wpdomain=$(grep " * Text Domain:" "$rootfile" | awk -F' ' '{print $NF}')
 
@@ -49,7 +50,7 @@ svn add --force * --auto-props --parents --depth infinity -q > /dev/null
 svn ci -m "tagging version $version"
 
 cd /tmp/
-slack-message "Deploy on WordPress SVN of $file done!"
+slack-message "Deploy on WordPress SVN of $version done!"
 rm -fr "./$wd"
 echo " "
 echo "Deploy of the new version done!"
