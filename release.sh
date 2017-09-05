@@ -29,7 +29,7 @@ rootfile=$(grep -R "WordPress-Plugin-Boilerplate-Powered" . | awk -F: '{print $1
 # Get plugin version
 version=$(grep " * Version:" "$rootfile" | awk -F' ' '{print $NF}')
 
-slack-message "Deploy on WordPress SVN of $ started!"
+slack-message "Deploy on WordPress SVN of $version started!"
 # Get the domain for WP SVN
 wpdomain=$(grep " * Text Domain:" "$rootfile" | awk -F' ' '{print $NF}')
 
