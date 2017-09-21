@@ -24,7 +24,7 @@ fi
 r=$(( RANDOM % 10 ));
 foldername="$originalfoldername-$r"
 
-cp -ar "$pluginfolder" /tmp/"$foldername"
+cp -r "$pluginfolder" /tmp/"$foldername"
 
 cd /tmp/$foldername || exit
 
