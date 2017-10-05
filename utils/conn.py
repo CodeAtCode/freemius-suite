@@ -94,4 +94,3 @@ def deploy_plugin(authmethod=True):
     response = fconn.getresponse()
     print(response.read())
     print(" Deploying done!")
-    

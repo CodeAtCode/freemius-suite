@@ -28,6 +28,8 @@ It use internally the string `WordPress-Plugin-Boilerplate-Powered` to find the 
 ## deploy.py
 
 This script require a `config.ini` with the user id, the public key and secret key.  
+
+`deploy.py [plugin-folder]`
+
 After this the script do a ping to Freemius to check if the data login are working, next execute `package.sh`, the parameters are the same of `package.sh`.  
 *WIP* deploy the zip generated and switch as new version, next download the free version and upload on SVN.
-
