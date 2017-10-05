@@ -15,8 +15,9 @@ if [ -z $2 ]; then
     packagename=$(basename "$pluginfolder")
 fi
 fileroot="$packagename.php"
+fullpathfile="$pluginfolder/$packagename.php"
 
-if [ ! -f $packagename.php ]; then
+if [ ! -f $fullpathfile ]; then
     echo "$packagename.php file missing"
     exit 1
 fi

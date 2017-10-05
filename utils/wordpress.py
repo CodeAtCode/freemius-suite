@@ -27,6 +27,7 @@ def generate_package():
     # Package the plugin
     package = get_zip_name()
     if not os.path.isfile('./' + package):
-        subprocess.call("./package.sh " + packagecommands, shell=True)
+        path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+        subprocess.call(path + "/package.sh " + packagecommands, shell=True)
     else:
         print(' Already available a %s file, not packaging again' % package)
