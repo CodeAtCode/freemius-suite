@@ -1,7 +1,7 @@
 import sys, configparser, os.path
 
 path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-path = path + 'config.ini'
+path = path + '/config.ini'
 
 if len(sys.argv) == 0:
     print('The folder of the script is required!')
