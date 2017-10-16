@@ -5,6 +5,11 @@
 
 The focus of this project is to have a suite of scripts to automatize few steps on the deploy of a new version of a plugin on Freemius.
 
+### Requirements
+
+* crudini (parse the config.ini easily from bash)
+* php-cli
+
 ## package.sh
 
 This script from a folder generate a zip package ready to be uploaded on Freemius.  
@@ -25,11 +30,12 @@ It use internally the string `WordPress-Plugin-Boilerplate-Powered` to find the 
 
 * The first parameter is the zip of the plugin.
 
-## deploy.py
+## deploy.php
 
-This script require a `config.ini` with the user id, the public key and secret key.  
+This script require a `config.ini` with the user id, the public key and secret key and the plugins to deployt with path.  
 
-`deploy.py [plugin-folder]`
+`deploy.php [plugin-codename]`
 
-After this the script do a ping to Freemius to check if the data login are working, next execute `package.sh`, the parameters are the same of `package.sh`.  
-*WIP* deploy the zip generated and switch as new version, next download the free version and upload on SVN.
+The script will download the API wrapper in PHP of Freemius, next execute `package.sh` (that will get the parameters from the config.ini).  
+Will execute the deploy system using the official API
+*WIP* switch as new version, next download the free version and upload on SVN.

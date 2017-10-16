@@ -8,9 +8,10 @@
     define( 'FS__API_SECRET_KEY', $argv[3] );
 
     // Init SDK.
-    $api = new Freemius_Api(FS__API_SCOPE, FS__API_DEV_ID, FS__API_PUBLIC_KEY, FS__API_SECRET_KEY, true);
+    $sandbox = ($argv[6] === 'true');
+    $api = new Freemius_Api(FS__API_SCOPE, FS__API_DEV_ID, FS__API_PUBLIC_KEY, FS__API_SECRET_KEY, $sandbox);
 
-    $result = $api->Api('plugins/115/tags.json', 'POST', array(
+    $result = $api->Api('plugins/'.$argv[5].'/tags.json', 'POST', array(
         'add_contributor' => false
     ), array(
         'file' => $argv[4]

@@ -18,6 +18,6 @@ eval $(crudini --get --format=sh  "$wsd"/config.ini Login)
 
 . "$wsd"/package.sh $path $filename
 
-filezip="$wsd"/"$packagename"-"$version".zip
+filezip="$wd"/"$packagename"-"$version".zip
 
-php "$wsd"/deploy.php $user $pubkey $secretkey $filezip
+php "$wsd"/deploy.php $user $pubkey $secretkey $filezip $id $sandbox
