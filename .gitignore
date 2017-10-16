@@ -1,3 +1,4 @@
 config.ini
 *.zip
 *pycache*
+freemius-php-api

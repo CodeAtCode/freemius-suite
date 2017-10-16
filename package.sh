@@ -84,7 +84,7 @@ fi
 
 zip -r "$wd"/"$packagename"-"$version".zip ./ &> /dev/null
 
-slack-message "Package generated for $packagename at $version done!"
+#slack-message "Package generated for $packagename at $version done!"
 rm -rf /tmp/"$foldername"
 
 echo "-Done!"
