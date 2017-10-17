@@ -44,7 +44,9 @@ rm -rf ./*.neon
 rm -rf ./.*.cache
 rm -rf ./psalm.xml
 rm -rf ./package.json
+rm -rf ./package-lock.json
 rm -rf ./Gruntfile.js
+rm -rf ./gulpfile.js
 rm -rf ./composer.lock
 rm -rf ./.netbeans*
 rm -rf ./.php_cs
