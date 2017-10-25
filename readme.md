@@ -3,12 +3,20 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c616b55e9b534e13b9e8fe30ff624e19)](https://www.codacy.com/app/mte90net/freemius-suite?utm_source=github.com&utm_medium=referral&utm_content=CodeAtCode/freemius-suite&utm_campaign=badger)
 [![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)   
 
-The focus of this project is to have a suite of scripts to automatize few steps on the deploy of a new version of a plugin on Freemius.
+The focus of this project is to have a suite of scripts to automatize few steps on the deploy of a new version of a plugin on Freemius and on WordPress SVN.
 
 ### Requirements
 
 * crudini (parse the config.ini easily from bash)
 * php-cli
+
+## deploy.sh
+
+This script use the `config.ini` file to get the settings like dev id etc.  
+
+`deploy.sh [your-section]`
+
+Atuomatically will execute all the rest of scripts with deploying on Fremmius and on WordPress SVN of the free version.
 
 ## package.sh
 
