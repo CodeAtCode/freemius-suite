@@ -1,6 +1,6 @@
 #!/bin/bash
 
-wsd=$(dirname "$0")
+wsd="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 savepwd=$PWD
 
 # Download Freemius API wrapper in php
@@ -21,3 +21,5 @@ eval $(crudini --get --format=sh  "$wsd"/config.ini Login)
 filezip="$wd"/"$packagename"-"$version".zip
 
 php "$wsd"/deploy.php $user $pubkey $secretkey $filezip $id $sandbox
+
+rm $filezip
