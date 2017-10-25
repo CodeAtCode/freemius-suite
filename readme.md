@@ -16,7 +16,7 @@ This script use the `config.ini` file to get the settings like dev id etc.
 
 `deploy.sh [your-section]`
 
-Atuomatically will execute all the rest of scripts with deploying on Fremmius and on WordPress SVN of the free version.
+Automatically will execute all the script suite with deploying on Fremmius and on WordPress SVN of the free version.
 
 ## package.sh
 
@@ -45,5 +45,4 @@ This script require a `config.ini` with the user id, the public key and secret k
 `deploy.php [plugin-codename]`
 
 The script will download the API wrapper in PHP of Freemius, next execute `package.sh` (that will get the parameters from the config.ini).  
-Will execute the deploy system using the official API
-*WIP* switch as new version, next download the free version and upload on SVN.
+Will execute the deploy system using the official API to upload and download the package.
