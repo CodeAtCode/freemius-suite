@@ -5,7 +5,8 @@ savepwd=$PWD
 
 # Download Freemius API wrapper in php
 if [ ! -d "$wsd/freemius-php-api" ]; then
-    git clone git@github.com:Freemius/php-sdk.git "$wd"/freemius-php-api
+    echo "Download Freemius PHP SDK"
+    git clone git@github.com:Freemius/php-sdk.git "$wsd"/freemius-php-api
 fi
 if [ ! -f "$wsd/config.ini" ]; then
     echo "file config.ini missing"
@@ -18,7 +19,7 @@ eval $(crudini --get --format=sh  "$wsd"/config.ini Login)
 
 . "$wsd"/package.sh $path $filename
 
-filezip="$wd"/"$packagename"-"$version".zip
+filezip="$savepwd"/"$packagename"-"$version".zip
 
 php "$wsd"/deploy.php $user $pubkey $secretkey $filezip $id $sandbox
 
