@@ -23,10 +23,9 @@
     echo "-Deploy done on Freemius\n";
 
     // Set as released
-    $is_released = $api->Api('plugins/'.$argv[5].'/tags/'.$deploy->id.'.json', 'POST', array(
+    $is_released = $api->Api('plugins/'.$argv[5].'/tags/'.$deploy->id.'.json', 'PUT', array(
         'is_released' => true
     ), array());
-    print_r($is_released);
 
     echo "-Set as released on Freemius\n";
 

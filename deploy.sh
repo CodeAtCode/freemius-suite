@@ -13,7 +13,7 @@ if [ ! -f "$wsd/config.ini" ]; then
     exit
 fi
 
-echo "Deploy process started"
+echo "-Deploy process started"
 
 # Read the config.ini
 eval $(crudini --get --format=sh  "$wsd"/config.ini $1)
@@ -26,3 +26,7 @@ filezip="$savepwd"/"$packagename"-"$version".zip
 php "$wsd"/deploy.php $user $pubkey $secretkey $filezip $id $sandbox
 
 rm $filezip
+
+filezipfree="$savepwd"/"$packagename"-"$version".free.zip
+
+. "$wsd"/release.sh $filezipfree

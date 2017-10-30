@@ -12,10 +12,10 @@ r=$(( RANDOM % 10 ));
 wd="$1-$r"
 extract="$wd/upload"
 
-echo "Deploy on SVN started!"
+echo "-Deploy on SVN started!"
 
 
-echo "Wait few minutes for the procedure!"
+echo "-Wait few minutes for the procedure!"
 cd /tmp/
 mkdir $wd
 unzip $file -d $extract > /dev/null
@@ -37,21 +37,22 @@ if [ -z $wpdomain ]; then
     exit 1
 fi
 
-echo "Cloning SVN locally"
+echo "-Cloning SVN locally"
 svn co "https://plugins.svn.wordpress.org/$wpdomain" > /dev/null
 
-echo "Copying new plugin version on SVN locally"
+echo "-Copying new plugin version on SVN locally"
 cp -r "/tmp/$extract/$zipfolder." ./"$wpdomain"/trunk
 cp -r "./$wpdomain"/trunk/. "$wpdomain"/tags/"$version"
 
-echo "Deploying new plugin version on SVN remote"
+echo "-Deploying new plugin version on SVN remote"
 cd "$wpdomain"
+# This command force to add all the files, also if they are new
 svn add --force * --auto-props --parents --depth infinity -q > /dev/null
 svn ci -m "tagging version $version"
 
 cd /tmp/
-slack-message "Deploy on WordPress SVN of $version done!"
+slack-message "-Deploy on WordPress SVN of $version done!"
 rm -fr "./$wd"
 echo " "
-echo "Deploy of the new version done!"
+echo "-Deploy of the new free version done!"
 
