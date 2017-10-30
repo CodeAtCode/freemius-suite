@@ -23,7 +23,10 @@
     echo "-Deploy done on Freemius\n";
 
     // Set as released
-    $is_released = file_get_contents($api->GetSignedUrl('plugins/'.$argv[5].'/tags.json?is_released=true'));
+    $is_released = $api->Api('plugins/'.$argv[5].'/tags/'.$deploy->id.'.json', 'POST', array(
+        'is_released' => true
+    ), array());
+    print_r($is_released);
 
     echo "-Set as released on Freemius\n";
 

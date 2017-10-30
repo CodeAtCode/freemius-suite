@@ -13,6 +13,8 @@ if [ ! -f "$wsd/config.ini" ]; then
     exit
 fi
 
+echo "Deploy process started"
+
 # Read the config.ini
 eval $(crudini --get --format=sh  "$wsd"/config.ini $1)
 eval $(crudini --get --format=sh  "$wsd"/config.ini Login)
