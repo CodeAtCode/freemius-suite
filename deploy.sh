@@ -23,6 +23,8 @@ eval $(crudini --get --format=sh  "$wsd"/config.ini Login)
 
 filezip="$savepwd"/"$packagename"-"$version".zip
 
+slack-message "Upload to Freemius and download in progress"
+
 php "$wsd"/deploy.php $user $pubkey $secretkey $filezip $id $sandbox
 
 rm $filezip
