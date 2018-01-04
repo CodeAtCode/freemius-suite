@@ -1,7 +1,7 @@
 #!/bin/bash
 
 wsd="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-savepwd=$PWD
+output='/tmp'
 
 # Download Freemius API wrapper in php
 if [ ! -d "$wsd/freemius-php-api" ]; then
@@ -21,7 +21,7 @@ eval $(crudini --get --format=sh  "$wsd"/config.ini Login)
 
 . "$wsd"/package.sh $path $filename
 
-filezip="$savepwd"/"$packagename"-"$version".zip
+filezip="$output"/"$packagename"-"$version".zip
 
 slack-message "Upload to Freemius and download in progress"
 
@@ -29,6 +29,6 @@ php "$wsd"/deploy.php $user $pubkey $secretkey $filezip $id $sandbox
 
 rm $filezip
 
-filezipfree="$savepwd"/"$packagename"-"$version".free.zip
+filezipfree="$output"/"$packagename"-"$version".free.zip
 
 . "$wsd"/release.sh $filezipfree

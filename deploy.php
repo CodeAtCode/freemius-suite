@@ -20,6 +20,11 @@
         'file' => $argv[4]
     ));
 
+    if (!is_object($api)) {
+        print_r($deploy);
+        die();
+    }
+
     echo "-Deploy done on Freemius\n";
 
     // Set as released

@@ -5,10 +5,11 @@
 # Slack bash script https://gist.github.com/andkirby/67a774513215d7ba06384186dd441d9e
 
 pluginfolder=$(readlink -f $1)
-wd=$PWD
+output='/tmp'
 if [ -z $1 ]; then
-    pluginfolder=$wd
+    pluginfolder=$(pwd)
 fi
+
 originalfoldername=$(basename "$pluginfolder")
 packagename=$2
 if [ -z $2 ]; then
@@ -84,7 +85,7 @@ if [ -f './includes/Fake_Freemius.php' ]; then
     sed -i "$rowfs/\/\///" "$fileroot"
 fi
 
-zip -r "$wd"/"$packagename"-"$version".zip ./ &> /dev/null
+zip -r "$output"/"$packagename"-"$version".zip ./ &> /dev/null
 
 slack-message "Package generated for $packagename at $version done!"
 rm -rf /tmp/"$foldername"
