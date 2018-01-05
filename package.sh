@@ -4,21 +4,21 @@
 
 # Slack bash script https://gist.github.com/andkirby/67a774513215d7ba06384186dd441d9e
 
-pluginfolder=$(readlink -f $1)
+pluginfolder=$(readlink -f "$1")
 output='/tmp'
-if [ -z $1 ]; then
+if [ -z "$1" ]; then
     pluginfolder=$(pwd)
 fi
 
 originalfoldername=$(basename "$pluginfolder")
 packagename=$2
-if [ -z $2 ]; then
+if [ -z "$2" ]; then
     packagename=$(basename "$pluginfolder")
 fi
 fileroot="$packagename.php"
 fullpathfile="$pluginfolder/$packagename.php"
 
-if [ ! -f $fullpathfile ]; then
+if [ ! -f "$fullpathfile" ]; then
     echo "$packagename.php file missing"
     exit 1
 fi
@@ -28,7 +28,7 @@ foldername="$originalfoldername-$r"
 
 cp -r "$pluginfolder" /tmp/"$foldername"
 
-cd /tmp/$foldername || exit
+cd /tmp/"$foldername" || exit
 
 version=$(grep "^Stable tag:" README.txt | awk -F' ' '{print $NF}')
 
@@ -39,6 +39,8 @@ rm -rf ./.git*
 rm -rf ./.sass-cache
 rm -rf ./.directory
 rm -rf ./node_modules
+rm -rf ./nbproject
+rm -rf ./composer/
 rm -rf ./wp-config-test.php
 rm -rf ./*.yml
 rm -rf ./*.neon
@@ -50,6 +52,7 @@ rm -rf ./Gruntfile.js
 rm -rf ./gulpfile.js
 rm -rf ./composer.lock
 rm -rf ./.netbeans*
+rm -rf ./.travis*
 rm -rf ./.php_cs
 rm -rf ./assets
 rm -rf ./admin/assets/sass
@@ -61,19 +64,19 @@ rm -rf ./*.zip
 rm -rf ./vendor
 rm -rf ./tests
 
-if [ -f composer.json ]; then
+if [ -s './composer.json' ]; then
     #Detect if there are composer dependencies
-    dep=$(cat composer.json | python -c "import json,sys;sys.stdout.write('true') if 'require' in json.load(sys.stdin)==False else sys.stdout.write('')")
-    if [ ! -z ${dep// } ]; then
+    dep=$(cat "./composer.json" | jq '.require')
+    if [ "$dep" != '' ]; then
         echo "-Downloading clean composer dependencies..."
         composer update --no-dev &> /dev/null
     else
-        rm -rf composer.json
+        rm -rf ./composer.json
     fi
 fi
 
 #Remove Fake_Freemius - it is the only requirement for Freemius
-if [ -f './includes/Fake_Freemius.php' ]; then
+if [ -s './includes/Fake_Freemius.php' ]; then
     echo "-Cleaning for Freemius"
     rm -rf ./includes/Fake_Freemius.php
     rowff=$(grep -n "/includes/Fake_Freemius.php" "$fileroot" | awk -F: '{print $1}')
@@ -82,7 +85,7 @@ if [ -f './includes/Fake_Freemius.php' ]; then
     #If Freemius SDK is commented remove the comments
     rowfs=$(grep -n "/includes/freemius/start.php" "$fileroot" | awk -F: '{print $1}')
     rowfs+='s'
-    sed -i "$rowfs/\/\///" "$fileroot"
+    sed -i "$rowfs/\\/\\///" "$fileroot"
 fi
 
 zip -r "$output"/"$packagename"-"$version".zip ./ &> /dev/null

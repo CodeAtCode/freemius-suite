@@ -27,7 +27,7 @@ slack-message "Upload to Freemius and download in progress"
 
 php "$wsd"/deploy.php $user $pubkey $secretkey $filezip $id $sandbox
 
-rm $filezip
+rm "$filezip"
 
 filezipfree="$output"/"$packagename"-"$version".free.zip
 
