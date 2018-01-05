@@ -45,10 +45,10 @@ echo "-Deploying new plugin version on SVN remote"
 cd "$wpdomain" || exit
 # This command force to add all the files, also if they are new
 svn add --force * --auto-props --parents --depth infinity -q > /dev/null
-# svn ci -m "tagging version $version"
+svn ci -m "tagging version $version"
 #
-# cd /tmp/ || exit
-# slack-message "Deploy on WordPress SVN of $version done!"
-# rm -fr "./$wd"
+cd /tmp/ || exit
+slack-message "Deploy on WordPress SVN of $version done!"
+rm -fr "./$wd"
 echo " "
 echo "-Deploy of the new free version done!"
