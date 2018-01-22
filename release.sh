@@ -8,17 +8,17 @@ if [[ ${file: -4} != ".zip" ]]; then
     exit 1
 fi
 
+folder=`basename $1`
 r=$(( RANDOM % 10 ));
-wd="$1-$r"
+wd="$folder-$r"
 
 echo "-Deploy on SVN started!"
 
 echo "-Wait few minutes for the procedure!"
-cd /tmp/ || exit
+cd "/tmp/" || exit
 mkdir "$wd"
 extract="/tmp/$wd/upload"
 unzip "$file" -d "$extract" > /dev/null
-cd /tmp/ || exit
 cd "$wd" || exit
 
 # Get the plugin root file
@@ -46,7 +46,7 @@ cd "$wpdomain" || exit
 # This command force to add all the files, also if they are new
 svn add --force * --auto-props --parents --depth infinity -q > /dev/null
 svn ci -m "tagging version $version"
-#
+
 cd /tmp/ || exit
 slack-message "Deploy on WordPress SVN of $version done!"
 rm -fr "./$wd"

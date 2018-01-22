@@ -46,6 +46,7 @@ rm -rf ./*.yml
 rm -rf ./*.neon
 rm -rf ./.*.cache
 rm -rf ./psalm.xml
+rm -rf ./codeat.xml
 rm -rf ./package.json
 rm -rf ./package-lock.json
 rm -rf ./Gruntfile.js
