@@ -14,6 +14,11 @@
         // Init SDK.
         $api = new Freemius_Api(FS__API_SCOPE, FS__API_DEV_ID, FS__API_PUBLIC_KEY, FS__API_SECRET_KEY, $sandbox);
 
+        if (!is_object($api)) {
+            print_r($deploy);
+            die();
+        }
+
         // Upload the zip
         $deploy = $api->Api('plugins/'.$argv[5].'/tags.json', 'POST', array(
             'add_contributor' => false
@@ -21,7 +26,7 @@
             'file' => $argv[4]
         ));
 
-        if (!is_object($api)) {
+        if (!property_exists($deploy, 'id')) {
             print_r($deploy);
             die();
         }
