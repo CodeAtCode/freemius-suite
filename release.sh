@@ -38,7 +38,7 @@ echo "-Cloning SVN locally"
 svn co "https://plugins.svn.wordpress.org/$wpdomain" > /dev/null
 
 echo "-Copying new plugin version on SVN locally"
-cp -r "$extract/." ./"$wpdomain"/trunk
+cp -r "$extract/$wpdomain/." ./"$wpdomain"/trunk
 cp -r "./$wpdomain"/trunk/. "$wpdomain"/tags/"$version"
 
 echo "-Deploying new plugin version on SVN remote"
