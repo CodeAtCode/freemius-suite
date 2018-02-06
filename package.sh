@@ -4,7 +4,11 @@
 
 # Slack bash script https://gist.github.com/andkirby/67a774513215d7ba06384186dd441d9e
 
-pluginfolder=$(readlink -f "$1")
+if [ "$(uname -s)" = 'Linux' ]; then
+    pluginfolder=$(readlink -f "$1")
+else
+    pluginfolder=$(readlink "$1")
+fi
 output='/tmp'
 if [ -z "$1" ]; then
     pluginfolder=$(pwd)

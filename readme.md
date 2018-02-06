@@ -9,6 +9,7 @@ The focus of this project is to have a suite of scripts to automatize few steps 
 
 * crudini (parse the config.ini easily from bash)
 * php-cli
+* jq on OSX
 
 ## deploy.sh
 
