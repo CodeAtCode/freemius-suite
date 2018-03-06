@@ -59,6 +59,7 @@ rm -rf ./composer.lock
 rm -rf ./.netbeans*
 rm -rf ./.travis*
 rm -rf ./.php_cs
+rm -rf ./.padawan
 rm -rf ./assets
 rm -rf ./admin/assets/sass
 rm -rf ./admin/assets/coffee
