@@ -48,7 +48,7 @@ svn add --force * --auto-props --parents --depth infinity -q > /dev/null
 svn ci -m "tagging version $version" 2>&1 | grep 'Error running context'
 if [[ $? -eq 0 ]]
 then
-    slack-message "Error on eeploy on WordPress SVN of $version!"
+    slack-message "Error on deploy on WordPress SVN of $version!"
     echo "-Deploy of the new free version failed!"
     exit 0
 else
