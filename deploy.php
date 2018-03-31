@@ -19,26 +19,32 @@
             die();
         }
 
-        // Upload the zip
-        $deploy = $api->Api('plugins/'.$argv[5].'/tags.json', 'POST', array(
-            'add_contributor' => false
-        ), array(
-            'file' => $argv[4]
-        ));
+        $deploy = $api->Api('plugins/594/tags.json');
+        if ( $deploy->tags[0]->version === $argv[6] ) {
+                $deploy = $deploy->tags[0];
+                echo '-Package already deployed on Freemius'."\n";
+        } else {
+            // Upload the zip
+            $deploy = $api->Api('plugins/'.$argv[5].'/tags.json', 'POST', array(
+                'add_contributor' => false
+            ), array(
+                'file' => $argv[4]
+            ));
 
-        if (!property_exists($deploy, 'id')) {
-            print_r($deploy);
-            die();
+            if (!property_exists($deploy, 'id')) {
+                print_r($deploy);
+                die();
+            }
+
+            echo "-Deploy done on Freemius\n";
+
+            // Set as released
+            $is_released = $api->Api('plugins/'.$argv[5].'/tags/'.$deploy->id.'.json', 'PUT', array(
+                'is_released' => true
+            ), array());
+
+            echo "-Set as released on Freemius\n";
         }
-
-        echo "-Deploy done on Freemius\n";
-
-        // Set as released
-        $is_released = $api->Api('plugins/'.$argv[5].'/tags/'.$deploy->id.'.json', 'PUT', array(
-            'is_released' => true
-        ), array());
-
-        echo "-Set as released on Freemius\n";
 
         // Generate url to download the zip
         $zip = $api->GetSignedUrl('plugins/'.$argv[5].'/tags/'.$deploy->id.'.zip');
