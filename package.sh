@@ -48,6 +48,7 @@ rm -rf ./composer/
 rm -rf ./wp-config-test.php
 rm -rf ./*.yml
 rm -rf ./*.neon
+rm -rf ./*.ini
 rm -rf ./.*.cache
 rm -rf ./psalm.xml
 rm -rf ./codeat.xml
