@@ -50,6 +50,7 @@ rm -rf ./*.yml
 rm -rf ./*.neon
 rm -rf ./*.ini
 rm -rf ./.*.cache
+rm -rf ./.gitignore
 rm -rf ./psalm.xml
 rm -rf ./codeat.xml
 rm -rf ./package.json
@@ -73,8 +74,8 @@ rm -rf ./tests
 
 if [ -s './composer.json' ]; then
     #Detect if there are composer dependencies
-    dep=$(cat "./composer.json" | jq '.require')
-    if [ "$dep" != '' ]; then
+    dep=$(cat "./composer.json" | jq 'has(".require")')
+    if [ "$dep" == 'true' ]; then
         echo "-Downloading clean composer dependencies..."
         composer update --no-dev &> /dev/null
     else
