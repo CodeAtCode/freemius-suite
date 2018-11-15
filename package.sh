@@ -31,10 +31,14 @@ r=$(( RANDOM % 10 ));
 foldername="$originalfoldername-$r"
 
 cp -r "$pluginfolder" /tmp/"$foldername"
-
-cd /tmp/"$foldername" || exit
+cd $pluginfolder || exit
 
 version=$(grep "^Stable tag:" README.txt | awk -F' ' '{print $NF}')
+
+echo "-Created the git tag for $version version"
+git tag -a $version -m "$version"
+
+cd /tmp/"$foldername" || exit
 
 echo "-Generating the zip in progress..."
 
