@@ -30,14 +30,16 @@ fi
 r=$(( RANDOM % 10 ));
 foldername="$originalfoldername-$r"
 
-cp -r "$pluginfolder" /tmp/"$foldername"
 cd $pluginfolder || exit
 
 version=$(grep "^Stable tag:" README.txt | awk -F' ' '{print $NF}')
 
-echo "-Created the git tag for $version version"
 git tag -a $version -m "$version"
+git checkout master
+git push origin "$version"
+echo "-Created the git tag for $version version"
 
+cp -r "$pluginfolder" /tmp/"$foldername"
 cd /tmp/"$foldername" || exit
 
 echo "-Generating the zip in progress..."
