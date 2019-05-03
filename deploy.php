@@ -8,7 +8,7 @@
     define( 'FS__API_PUBLIC_KEY', $argv[2] );
     define( 'FS__API_SECRET_KEY', $argv[3] );
 
-    echo "-Deploy in progress on Freemius\n";
+    echo "- Deploy in progress on Freemius\n";
 
     try {
         // Init SDK.
@@ -36,14 +36,14 @@
                 die();
             }
 
-            echo "-Deploy done on Freemius\n";
+            echo "- Deploy done on Freemius\n";
 
             // Set as released
             $is_released = $api->Api('plugins/'.$argv[5].'/tags/'.$deploy->id.'.json', 'PUT', array(
                 'is_released' => true
             ), array());
 
-            echo "-Set as released on Freemius\n";
+            echo "- Set as released on Freemius\n";
         }
 
         // Generate url to download the zip
@@ -55,9 +55,9 @@
 
         file_put_contents($newzipname,file_get_contents($zip));
 
-        echo "-Download Freemius free version\n";
+        echo "- Download Freemius free version\n";
     }
     catch (Exception $e) {
-        echo '-Freemius server has problems'."\n";
+        echo "- Freemius server has problems\n";
         die();
     }
