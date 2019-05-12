@@ -19,7 +19,7 @@
             die();
         }
 
-        $deploy = $api->Api('plugins/594/tags.json');
+        $deploy = $api->Api('plugins/' . $argv[6] . '/tags.json');
         if ( $deploy->tags[0]->version === $argv[6] ) {
                 $deploy = $deploy->tags[0];
                 echo '-Package already deployed on Freemius'."\n";
