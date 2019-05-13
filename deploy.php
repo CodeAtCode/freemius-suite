@@ -2,11 +2,12 @@
     require_once 'freemius-php-api/freemius/FreemiusBase.php';
     require_once 'freemius-php-api/freemius/Freemius.php';
 
-    $sandbox = ($argv[6] === 'true');
-    define( 'FS__API_SCOPE', 'developer' );
-    define( 'FS__API_DEV_ID', $argv[1] );
-    define( 'FS__API_PUBLIC_KEY', $argv[2] );
-    define( 'FS__API_SECRET_KEY', $argv[3] );
+	$sandbox      = ( $argv[6] === 'true' );
+	$release_mode = ! empty( $argv[7] ) ? $argv[7] : 'pending';
+	define( 'FS__API_SCOPE', 'developer' );
+	define( 'FS__API_DEV_ID', $argv[1] );
+	define( 'FS__API_PUBLIC_KEY', $argv[2] );
+	define( 'FS__API_SECRET_KEY', $argv[3] );
 
     echo "- Deploy in progress on Freemius\n";
 
@@ -19,7 +20,7 @@
             die();
         }
 
-        $deploy = $api->Api('plugins/' . $argv[6] . '/tags.json');
+        $deploy = $api->Api('plugins/'.$argv[5].'/tags.json');
         if ( $deploy->tags[0]->version === $argv[6] ) {
                 $deploy = $deploy->tags[0];
                 echo '-Package already deployed on Freemius'."\n";
@@ -40,7 +41,7 @@
 
             // Set as released
             $is_released = $api->Api('plugins/'.$argv[5].'/tags/'.$deploy->id.'.json', 'PUT', array(
-                'release_mode' => 'released'
+                'release_mode' => $release_mode
             ), array());
 
             echo "- Set as released on Freemius\n";
