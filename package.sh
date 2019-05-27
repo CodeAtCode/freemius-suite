@@ -30,11 +30,11 @@ fi
 r=$(( RANDOM % 10 ));
 foldername="$originalfoldername-$r"
 
-cd $pluginfolder || exit
+cd ""$pluginfolder"" || exit
 
 version=$(grep "^Stable tag:" README.txt | awk -F' ' '{print $NF}')
 
-git tag -a $version -m "$version"
+git tag -a "$version" -m "$version"
 git checkout master
 git push origin "$version"
 echo "-Created the git tag for $version version"

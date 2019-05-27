@@ -8,7 +8,7 @@ if [[ ${file: -4} != ".zip" ]]; then
     exit 1
 fi
 
-folder=$(basename $1)
+folder=$(basename "$1")
 r=$(( RANDOM % 10 ));
 wd="$folder-$r"
 
