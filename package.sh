@@ -55,6 +55,7 @@ rm -rf ./wp-config-test.php
 rm -rf ./*.yml
 rm -rf ./*.neon
 rm -rf ./*.ini
+rm -rf ./*.sh
 rm -rf ./.*.cache
 rm -rf ./.gitignore
 rm -rf ./psalm.xml
