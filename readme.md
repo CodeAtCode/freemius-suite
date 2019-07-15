@@ -47,4 +47,5 @@ This script require a `config.ini` with the user id, the public key and secret k
 `deploy.php [user] []pubkey [secretkey] [zip-file] [freemius-plugin-id] [sandbox:true|false] [version] [releasemode:pending|beta|released]`
 
 The script will download the API wrapper in PHP of Freemius, next execute `package.sh` (that will get the parameters from the config.ini).  
-Will execute the deploy system using the official API to upload and download the package.
+Will execute the deploy system using the official API to upload and download the package.  
+The last parameter is not used in the suite.
