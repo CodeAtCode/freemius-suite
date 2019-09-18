@@ -12,12 +12,16 @@ folder=$(basename "$1")
 r=$(( RANDOM % 10 ));
 wd="$folder-$r"
 
-echo "- Deploy on SVN started!"
+echo "- Extracting free version $file"
 
-echo "- Wait few minutes for the procedure!"
 cd "/tmp/" || exit
 mkdir "$wd"
 extract="/tmp/$wd/upload"
+if [ ! -f "$file" ]; then
+    echo "$file doesn't exists"
+    exit
+fi
+
 unzip "$file" -d "$extract" > /dev/null
 cd "$wd" || exit
 
@@ -33,6 +37,9 @@ wpdomain=$(grep " * Text Domain:" "$rootfile" | awk -F' ' '{print $NF}')
 if [ -z "$wpdomain" ]; then
     exit 1
 fi
+
+echo "- Deploy on SVN started!"
+echo "- Wait few minutes for the procedure!"
 
 echo "- Cloning SVN locally"
 svn co "https://plugins.svn.wordpress.org/$wpdomain" > /dev/null

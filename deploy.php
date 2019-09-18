@@ -39,7 +39,6 @@
 
             echo "- Deploy done on Freemius\n";
 
-            // Set as released
             $is_released = $api->Api('plugins/'.$argv[5].'/tags/'.$deploy->id.'.json', 'PUT', array(
                 'release_mode' => $release_mode
             ), array());
@@ -47,6 +46,8 @@
             echo "- Set as released on Freemius\n";
         }
 
+        echo "- Download Freemius free version\n";
+        
         // Generate url to download the zip
         $zip = $api->GetSignedUrl('plugins/'.$argv[5].'/tags/'.$deploy->id.'.zip');
 
@@ -55,8 +56,8 @@
         $newzipname .= '.free.zip';
 
         file_put_contents($newzipname,file_get_contents($zip));
-
-        echo "- Download Freemius free version\n";
+        
+        echo "- Downloaded Freemius free version\n";
     }
     catch (Exception $e) {
         echo "- Freemius server has problems\n";
