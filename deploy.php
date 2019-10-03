@@ -9,7 +9,7 @@
 	define( 'FS__API_PUBLIC_KEY', $argv[2] );
 	define( 'FS__API_SECRET_KEY', $argv[3] );
 
-    echo "- Deploy in progress on Freemius\n";
+    echo "\n- Deploy in progress on Freemius\n";
 
     try {
         // Init SDK.
@@ -61,5 +61,4 @@
     }
     catch (Exception $e) {
         echo "- Freemius server has problems\n";
-        die();
     }

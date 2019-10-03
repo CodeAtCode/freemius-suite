@@ -108,4 +108,4 @@ zip -r "$output"/"$packagename"-"$version".zip ./ &> /dev/null
 slack-message "Package generated for $packagename at $version done!"
 rm -rf /tmp/"$foldername"
 
-echo "-Package generated!"
+echo " -Package generated!"
