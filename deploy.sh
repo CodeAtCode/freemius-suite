@@ -26,8 +26,8 @@ filezip="$output"/"$packagename"-"$version".zip
 slack-message "Upload to Freemius and download in progress" &2> /dev/null
 
 php "$wsd"/deploy.php $user $pubkey $secretkey $filezip $id $sandbox $version 
-rm "$filezip"
 
 filezipfree="$output"/"$packagename"-"$version".free.zip
 
 . "$wsd"/release.sh $filezipfree
+rm "$filezip"
