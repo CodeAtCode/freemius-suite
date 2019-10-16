@@ -58,6 +58,7 @@ rm -rf ./*.ini
 rm -rf ./*.sh
 rm -rf ./.*.cache
 rm -rf ./.gitignore
+rm -rf ./.eslintrc.json
 rm -rf ./psalm.xml
 rm -rf ./codeat.xml
 rm -rf ./package.json
