@@ -30,7 +30,7 @@ fi
 r=$(( RANDOM % 10 ));
 foldername="$originalfoldername-$r"
 
-cd ""$pluginfolder"" || exit
+cd "$pluginfolder" || exit
 
 version=$(grep "^Stable tag:" README.txt | awk -F' ' '{print $NF}')
 
