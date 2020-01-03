@@ -5,12 +5,18 @@
 
 The focus of this project is to have a suite of scripts to automatize few steps on the deploy of a new version of a plugin on Freemius and on WordPress SVN.
 
-### Requirements
+## Requirements
 
 * crudini (parse the config.ini easily from bash)
 * php-cli
 * jq on OSX
 * slack-message (bash script): https://gist.github.com/andkirby/67a774513215d7ba06384186dd441d9e
+
+# Install it
+
+Just copy and rename `config-sample.ini` to `config.ini` and set as you need.
+
+# How to use it
 
 ## deploy.sh
 
@@ -22,8 +28,8 @@ Automatically will execute all the script suite with deploying on Fremmius and o
 
 ## package.sh
 
-This script from a folder generate a zip package ready to be uploaded on Freemius.  
-It also switch from Fake_Freemius if in the code is enabled.  
+This script from a folder generate a zip package ready (with `composer update --no-dev`) to be uploaded on Freemius.  
+It also switch from `Fake_Freemius` (a fake class to simulate Freemius SDK) if in the code is enabled.  
 Generate a zip in the working directory where the plugin is executed.
 
 `package.sh [plugin-folder] [plugin-root-filename]`
