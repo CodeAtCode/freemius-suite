@@ -9,10 +9,8 @@ if [ "$(uname -s)" = 'Linux' ]; then
 else
     pluginfolder=$(readlink "$1")
 fi
+
 output='/tmp'
-if [ -z "$1" ]; then
-    pluginfolder=$(pwd)
-fi
 
 originalfoldername=$(basename "$pluginfolder")
 packagename=$2
@@ -23,7 +21,7 @@ fileroot="$packagename.php"
 fullpathfile="$pluginfolder/$packagename.php"
 
 if [ ! -f "$fullpathfile" ]; then
-    echo "$packagename.php file missing"
+    echo "$fullpathfile file not exists"
     exit 1
 fi
 
