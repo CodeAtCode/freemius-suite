@@ -11,6 +11,9 @@ else
 fi
 
 output='/tmp'
+if [ -z "$1" ]; then
+    pluginfolder=$(pwd)
+fi
 
 originalfoldername=$(basename "$pluginfolder")
 packagename=$2
@@ -25,8 +28,8 @@ if [ ! -f "$fullpathfile" ]; then
     exit 1
 fi
 
-r=$(( RANDOM % 10 ));
-foldername="$originalfoldername-$r"
+mktemp -d "/tmp/$originalfoldername"
+foldername="/tmp/$originalfoldername"
 
 cd "$pluginfolder" || exit
 
@@ -37,8 +40,8 @@ git checkout master
 git push origin "$version"
 echo "-Created the git tag for $version version"
 
-cp -r "$pluginfolder" /tmp/"$foldername"
-cd /tmp/"$foldername" || exit
+cp -r "$pluginfolder" "$foldername"
+cd "$foldername" || exit
 
 echo "-Generating the zip in progress..."
 
@@ -104,6 +107,6 @@ fi
 zip -r "$output"/"$packagename"-"$version".zip ./ &> /dev/null
 
 slack-message "Package generated for $packagename at $version done!"
-rm -rf /tmp/"$foldername"
+rm -rf "$foldername"
 
 echo " -Package generated!"
