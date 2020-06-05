@@ -39,7 +39,7 @@ if [ -x "$(command -v wp-readme-last-wp-tested)" ]; then
     wp-readme-last-wp-tested README.txt
     if [ -n $(git diff-index --quiet HEAD) ]; then
         git add README.txt
-        git commit -m "bumped Tested Up field in README.txt"
+        git commit -m "bumped Tested Up field in README.txt" -n
         git push origin master
     fi
 fi
