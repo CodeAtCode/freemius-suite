@@ -37,6 +37,8 @@ Generate a zip in the working directory where the plugin is executed.
 * The first parameter is the plugin folder, if not set use the current working directory.
 * The second parameter is the root filename of the plugin (where there are the Plugin Header Comments) without the extension, if not set use the plugin folder name.
 
+This script will also execute [wp-readme-last-wp-tested](https://github.com/WPBP/tools/blob/master/wp-readme-last-wp-tested.sh) if command isfound, that let you to automatically bump the Tested Up field with the latest WordPress release in the readme.
+
 ## release.sh
 
 This script from a zip file, unzip the package and push a new version of WP SVN.  

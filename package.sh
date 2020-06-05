@@ -35,6 +35,15 @@ cd "$pluginfolder" || exit
 
 version=$(grep "^Stable tag:" README.txt | awk -F' ' '{print $NF}')
 
+if [ -x "$(command -v wp-readme-last-wp-tested)" ]; then
+    wp-readme-last-wp-tested README.txt
+    if [ -n $(git diff-index --quiet HEAD) ]; then
+        git add README.txt
+        git commit -m "bumped Tested Up field in README.txt"
+        git push origin master
+    fi
+fi
+
 git tag -a "$version" -m "$version"
 git checkout master
 git push origin "$version"
