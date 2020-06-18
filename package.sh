@@ -66,10 +66,10 @@ rm -rf ./*.yml
 rm -rf ./*.neon
 rm -rf ./*.ini
 rm -rf ./*.sh
+rm -rf ./*.xml
 rm -rf ./.*.cache
+rm -rf ./.env
 rm -rf ./.gitignore
-rm -rf ./psalm.xml
-rm -rf ./codeat.xml
 rm -rf ./package.json
 rm -rf ./package-lock.json
 rm -rf ./Gruntfile.js
@@ -79,7 +79,6 @@ rm -rf ./.netbeans*
 rm -rf ./.travis*
 rm -rf ./.php_cs
 rm -rf ./.padawan*
-rm -rf ./assets
 rm -rf ./admin/assets/sass
 rm -rf ./admin/assets/coffee
 rm -rf ./public/assets/sass
@@ -88,6 +87,13 @@ rm -rf ./*.zip
 #This contain the test stuff
 rm -rf ./vendor
 rm -rf ./tests
+
+#This contain the WP repo assets
+if [ -d './wp-assets' ]; then
+    rm -rf ./wp-assets
+else
+    rm -rf ./assets
+fi
 
 if [ -s './composer.json' ]; then
     #Detect if there are composer dependencies
@@ -111,6 +117,15 @@ if [ -s './includes/Fake_Freemius.php' ]; then
     rowfs=$(grep -n "/includes/freemius/start.php" "$fileroot" | awk -F: '{print $1}')
     rowfs+='s'
     sed -i "$rowfs/\\/\\///" "$fileroot"
+fi
+
+#Remove Fake_Freemius for WPBP 3.2.0 - it is the only requirement for Freemius
+if [ -s './Fake_Freemius.php' ]; then
+    echo "-Cleaning for Freemius"
+    rm -rf ./Fake_Freemius.php
+    rowff=$(grep -n "/Fake_Freemius.php" "$fileroot" | awk -F: '{print $1}')
+    rowff+='d'
+    sed -i "$rowff" "$fileroot"
 fi
 
 zip -r "$output"/"$packagename"-"$version".zip ./ &> /dev/null
