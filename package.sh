@@ -58,6 +58,7 @@ echo "-Cleaning in Progress..."
 rm -rf ./.git*
 rm -rf ./.sass-cache
 rm -rf ./.directory
+rm -rf ./.eslintrc.json
 rm -rf ./node_modules
 rm -rf ./nbproject
 rm -rf ./composer/
@@ -79,6 +80,7 @@ rm -rf ./.netbeans*
 rm -rf ./.travis*
 rm -rf ./.php_cs
 rm -rf ./.padawan*
+rm -rf ./wp-content
 rm -rf ./admin/assets/sass
 rm -rf ./admin/assets/coffee
 rm -rf ./public/assets/sass
