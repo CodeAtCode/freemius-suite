@@ -10,7 +10,6 @@ The focus of this project is to have a suite of scripts to automatize few steps 
 * crudini (parse the config.ini easily from bash)
 * php-cli
 * jq on OSX
-* slack-message (bash script): https://gist.github.com/andkirby/67a774513215d7ba06384186dd441d9e
 
 # Install it
 
