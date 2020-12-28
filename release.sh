@@ -30,7 +30,6 @@ rootfile=$(grep -R "WordPress-Plugin-Boilerplate-Powered" . | awk -F: '{print $1
 # Get plugin version
 version=$(grep " * Version:" "$rootfile" | awk -F' ' '{print $NF}')
 
-# slack-message "Deploy on WordPress SVN of $version started!"
 # Get the domain for WP SVN
 wpdomain=$(grep " * Text Domain:" "$rootfile" | awk -F' ' '{print $NF}')
 
@@ -55,11 +54,11 @@ svn add --force * --auto-props --parents --depth infinity -q > /dev/null
 svn ci -m "tagging version $version" 2>&1 | grep 'Error running context'
 if [[ $? -eq 0 ]]
 then
-    slack-message "Error on deploy on WordPress SVN of $version!"
+#     slack-message "Error on deploy on WordPress SVN of $version!"
     echo "- Deploy of the new free version failed!"
     exit 0
 else
-    slack-message "Deploy on WordPress SVN of $version done!"
+#     slack-message "Deploy on WordPress SVN of $version done!"
     echo "- Deploy of the new free version done!"
     exit 1
 fi
