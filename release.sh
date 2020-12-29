@@ -37,6 +37,11 @@ if [ -z "$wpdomain" ]; then
     exit 1
 fi
 
+if [ -s './composer.json' ]; then
+    echo "- Regenerating composer files!"
+    composer dumpautoload -o
+fi
+
 echo "- Deploy on SVN started!"
 echo "- Wait few minutes for the procedure!"
 
