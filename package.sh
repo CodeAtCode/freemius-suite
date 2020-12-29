@@ -65,7 +65,6 @@ rm -rf ./*.yml
 rm -rf ./*.neon
 rm -rf ./*.ini
 rm -rf ./*.sh
-rm -rf ./*.xml
 rm -rf ./.*.cache
 rm -rf ./.env
 rm -rf ./.gitignore
