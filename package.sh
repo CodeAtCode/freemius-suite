@@ -96,6 +96,7 @@ if [ -s './composer.json' ]; then
         echo "-Downloading clean composer dependencies..."
         rm -rf vendor
         composer update --no-dev &> /dev/null
+        composer dumpautoload -o
     else
         rm -rf ./composer.json
     fi
