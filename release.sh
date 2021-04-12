@@ -9,8 +9,8 @@ if [[ ${file: -4} != ".zip" ]]; then
 fi
 
 folder=$(basename "$1")
-r=$(( RANDOM % 10 ));
-wd="$folder-$r"
+wd="/tmp/$folder.XXXX"
+mktemp -d "$wd"
 
 echo "- Extracting free version $file"
 

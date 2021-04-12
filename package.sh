@@ -78,18 +78,19 @@ rm -rf ./.travis*
 rm -rf ./.php_cs
 rm -rf ./wp-content
 rm -rf ./*.zip
-#This contain the test stuff
+# This contain the test stuff
 rm -rf ./tests
 
-#This contain the WP repo assets
+# This contain the WP repo assets
 if [ -d './wp-assets' ]; then
     rm -rf ./wp-assets
 else
+    # Oldp lugins has that folde but new one use for other stuff
     rm -rf ./assets
 fi
 
 if [ -s './composer.json' ]; then
-    #Detect if there are composer dependencies
+    # Detect if there are composer dependencies
     dep=$(cat "./composer.json" | jq 'has("require")')
     if [ "$dep" == 'true' ]; then
         echo "- Downloading clean composer dependencies..."
@@ -103,13 +104,25 @@ if [ -s './composer.json' ]; then
     fi
 fi
 
-#Remove Fake_Freemius - it is the only requirement for Freemius
+# Remove Fake_Freemius - it is the only requirement for Freemius
 if [ -s './Fake_Freemius.php' ]; then
     echo "- Cleaning for Freemius"
     rm -rf ./Fake_Freemius.php
     rowff=$(grep -n "/Fake_Freemius.php" "$fileroot" | awk -F: '{print $1}')
     rowff+='s'
     sed -i "$rowff/.*/		require_once dirname( __FILE__ ) \\. '\\/vendor\\/freemius\\/wordpress-sdk\\/start.php'\;/" "$fileroot"
+fi
+# Support for old plugins
+if [ -s './includes/Fake_Freemius.php' ]; then
+    echo "- Cleaning for Freemius"
+    rm -rf ./includes/Fake_Freemius.php
+    rowff=$(grep -n "/includes/Fake_Freemius.php" "$fileroot" | awk -F: '{print $1}')
+    rowff+='d'
+    sed -i "$rowff" "$fileroot"
+    # If Freemius SDK is commented remove the comments
+    rowfs=$(grep -n "/includes/freemius/start.php" "$fileroot" | awk -F: '{print $1}')
+    rowfs+='s'
+    sed -i "$rowfs/\\/\\///" "$fileroot"
 fi
 
 zip -r "$output"/"$packagename"-"$version".zip ./ &> /dev/null
