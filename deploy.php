@@ -9,7 +9,7 @@
 	define( 'FS__API_PUBLIC_KEY', $argv[2] );
 	define( 'FS__API_SECRET_KEY', $argv[3] );
 
-    echo "\n- Deploy in progress on Freemius\n";
+    echo "- Deploy started on Freemius\n";
 
     try {
         // Init SDK.
@@ -21,10 +21,13 @@
         }
 
         $deploy = $api->Api('plugins/'.$argv[5].'/tags.json');
+        echo "- Detection of latest tag released\n";
+        
         if ( $deploy->tags[0]->version === $argv[6] ) {
                 $deploy = $deploy->tags[0];
                 echo '-Package already deployed on Freemius'."\n";
         } else {
+            echo "- Deploy in progress\n";
             // Upload the zip
             $deploy = $api->Api('plugins/'.$argv[5].'/tags.json', 'POST', array(
                 'add_contributor' => false
@@ -34,7 +37,8 @@
 
             if (!property_exists($deploy, 'id')) {
                 print_r($deploy);
-                die();
+                echo "- Deploy error\n";
+                exit(3);
             }
 
             echo "- Deploy done on Freemius\n";
@@ -58,7 +62,8 @@
         file_put_contents($newzipname,file_get_contents($zip));
         
         echo "- Downloaded Freemius free version\n";
-    }
-    catch (Exception $e) {
+        exit();
+    } catch (Exception $e) {
         echo "- Freemius server has problems\n";
+        exit(3);
     }

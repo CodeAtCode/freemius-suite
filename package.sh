@@ -26,8 +26,8 @@ if [ ! -f "$fullpathfile" ]; then
     exit 1
 fi
 
-mktemp -d "/tmp/$originalfoldername"
-foldername="/tmp/$originalfoldername"
+foldername="/tmp/$originalfoldername.XXXX"
+mktemp -d "$foldername"
 
 cd "$pluginfolder" || exit
 
@@ -36,23 +36,23 @@ version=$(grep "^Stable tag:" README.txt | awk -F' ' '{print $NF}')
 if [ -x "$(command -v wp-readme-last-wp-tested)" ]; then
     wp-readme-last-wp-tested README.txt
     if [ -n $(git diff-index --quiet HEAD) ]; then
-        git add README.txt
-        git commit -m "bumped Tested Up field in README.txt" -n
+        git add README.txt > /dev/null
+        git commit -m "bumped Tested Up field in README.txt" -n > /dev/null
         git push origin master
     fi
 fi
 
 git tag -a "$version" -m "$version"
-git checkout master
-git push origin "$version"
-echo "-Created the git tag for $version version"
+git checkout master > /dev/null
+git push origin "$version" > /dev/null
+echo "- Created the git tag for $version version"
 
 cp -r "$pluginfolder" "$foldername"
 cd "$foldername" || exit
 
-echo "-Generating the zip in progress..."
+echo "- Generating the zip in progress..."
 
-echo "-Cleaning in Progress..."
+echo "- Cleaning in Progress..."
 rm -rf ./.git*
 rm -rf ./.sass-cache
 rm -rf ./.directory
@@ -92,18 +92,20 @@ if [ -s './composer.json' ]; then
     #Detect if there are composer dependencies
     dep=$(cat "./composer.json" | jq 'has("require")')
     if [ "$dep" == 'true' ]; then
-        echo "-Downloading clean composer dependencies..."
+        echo "- Downloading clean composer dependencies..."
         rm -rf vendor
         composer update --no-dev &> /dev/null
         composer dumpautoload -o
     else
+        echo "- No composer packages detected for production..."
         rm -rf ./composer.json
+        rm -rf ./vendor
     fi
 fi
 
 #Remove Fake_Freemius - it is the only requirement for Freemius
 if [ -s './Fake_Freemius.php' ]; then
-    echo "-Cleaning for Freemius"
+    echo "- Cleaning for Freemius"
     rm -rf ./Fake_Freemius.php
     rowff=$(grep -n "/Fake_Freemius.php" "$fileroot" | awk -F: '{print $1}')
     rowff+='s'
@@ -114,4 +116,4 @@ zip -r "$output"/"$packagename"-"$version".zip ./ &> /dev/null
 
 rm -rf "$foldername"
 
-echo " -Package generated!"
+echo "- Package generated! "$output"/"$packagename"-"$version".zip"

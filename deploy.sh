@@ -29,8 +29,13 @@ echo "- Deploy process started"
 filezip="$output"/"$packagename"-"$version".zip
 
 php "$wsd"/deploy.php "$user" "$pubkey" "$secretkey" "$filezip" "$id" "$sandbox" "$version"
-rm "$filezip"
+status=$?
+if [ $status -ne 3 ]; then
+    rm "$filezip"
 
-filezipfree="$output"/"$packagename"-"$version".free.zip
+    filezipfree="$output"/"$packagename"-"$version".free.zip
 
-. "$wsd"/release.sh $filezipfree
+    . "$wsd"/release.sh $filezipfree
+else
+    echo "Error happened, file zip generated at $filezip"
+fi
