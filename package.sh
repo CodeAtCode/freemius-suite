@@ -42,10 +42,10 @@ if [ -x "$(command -v wp-readme-last-wp-tested)" ]; then
     fi
 fi
 
-git tag -a "$version" -m "$version"
-git checkout master > /dev/null
-git push origin "$version" > /dev/null
 echo "- Created the git tag for $version version"
+git tag -a "$version" -m "$version"
+git checkout master &> /dev/null
+git push origin "$version" > /dev/null
 
 cp -r "$pluginfolder" "$foldername"
 cd "$foldername" || exit

@@ -10,19 +10,19 @@ fi
 
 folder=$(basename "$1")
 wd="/tmp/$folder.XXXX"
-mktemp -d "$wd"
+wd=$(mktemp -d "$wd")
 
 echo "- Extracting free version $file"
 
 cd "/tmp/" || exit
 mkdir "$wd"
-extract="/tmp/$wd/upload"
+extract="$wd/upload"
 if [ ! -f "$file" ]; then
     echo "$file doesn't exists"
     exit
 fi
 
-unzip "$file" -d "$extract" > /dev/null
+unzip "$file" -d "$extract" &> /dev/null
 cd "$wd" || exit
 
 # Get the plugin root file
