@@ -15,7 +15,7 @@ wd=$(mktemp -d "$wd")
 echo "- Extracting free version $file"
 
 cd "/tmp/" || exit
-mkdir "$wd"
+mkdir -p "$wd"
 extract="$wd/upload"
 if [ ! -f "$file" ]; then
     echo "$file doesn't exists"
