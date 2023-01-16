@@ -29,8 +29,8 @@ echo "- Deploy process started"
 filezip="$output"/"$packagename"-"$version".zip
 
 php "$wsd"/deploy.php "$user" "$pubkey" "$secretkey" "$filezip" "$id" "$sandbox" "$version"
-status=$?
-if [ $status -ne 3 ]; then
+
+if [ $? -ne 3 ]; then
     rm "$filezip"
 
     filezipfree="$output"/"$packagename"-"$version".free.zip

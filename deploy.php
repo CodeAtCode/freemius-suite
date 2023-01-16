@@ -62,7 +62,7 @@
         file_put_contents($newzipname,file_get_contents($zip));
         
         echo "- Downloaded Freemius free version\n";
-        exit();
+        exit(0);
     } catch (Exception $e) {
         echo "- Freemius server has problems\n";
         exit(3);
