@@ -48,7 +48,7 @@ git checkout master &> /dev/null
 git push origin "$version" > /dev/null
 
 echo "- Copy the whole plugin folder to cleanup later, takes a while"
-rsync -a --exclude "vendor" "$pluginfolder" "$foldername"
+rsync -a --exclude "vendor" "$pluginfolder/" "$foldername"
 cd "$foldername" || exit
 
 echo "- Generating the zip in progress..."

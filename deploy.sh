@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -x
 wsd="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 output='/tmp'
 
@@ -29,8 +29,9 @@ echo "- Deploy process started"
 filezip="$output"/"$packagename"-"$version".zip
 
 php "$wsd"/deploy.php "$user" "$pubkey" "$secretkey" "$filezip" "$id" "$sandbox" "$version"
+status=$?
 
-if [ $? -ne 3 ]; then
+if [ $status -ne 3 ]; then
     rm "$filezip"
 
     filezipfree="$output"/"$packagename"-"$version".free.zip
