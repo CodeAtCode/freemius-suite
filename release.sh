@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Slack bash script https://gist.github.com/andkirby/67a774513215d7ba06384186dd441d9e
-
 file=$(readlink -f "$1")
 if [[ ${file: -4} != ".zip" ]]; then
     echo "The file $file is not a zip."

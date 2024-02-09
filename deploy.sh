@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+
 wsd="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 output='/tmp'
 
