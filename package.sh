@@ -35,7 +35,7 @@ version=$(grep "^Stable tag:" README.txt | awk -F' ' '{print $NF}')
 
 if [ -x "$(command -v wp-readme-last-wp-tested)" ]; then
     wp-readme-last-wp-tested README.txt
-    if [ -n $(git diff-index --quiet HEAD) ]; then
+    if [ -n $("git diff-index --quiet HEAD") ]; then
         git add README.txt > /dev/null
         git commit -m "bumped Tested Up field in README.txt" -n > /dev/null
         git push origin master
@@ -92,7 +92,7 @@ fi
 
 if [ -s './composer.json' ]; then
     # Detect if there are composer dependencies
-    dep=$(cat "./composer.json" | jq 'has("require")')
+    dep=$(jq 'has("require")' < "./composer.json")
     if [ "$dep" == 'true' ]; then
         echo "- Downloading clean composer dependencies..."
         rm -rf vendor
@@ -136,4 +136,4 @@ zip -r "$output"/"$packagename"-"$version".zip ./ &> /dev/null
 
 rm -rf "$foldername"
 
-echo "- Package generated! "$output"/"$packagename"-"$version".zip"
+echo "- Package generated! $output/$packagename-$version.zip"
