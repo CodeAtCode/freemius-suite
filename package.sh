@@ -35,7 +35,7 @@ version=$(grep "^Stable tag:" README.txt | awk -F' ' '{print $NF}')
 
 if [ -x "$(command -v wp-readme-last-wp-tested)" ]; then
     wp-readme-last-wp-tested README.txt
-    if [ -n $("git diff-index --quiet HEAD") ]; then
+    if [[ -n $(git diff-index --quiet HEAD) ]]; then
         git add README.txt > /dev/null
         git commit -m "bumped Tested Up field in README.txt" -n > /dev/null
         git push origin master
