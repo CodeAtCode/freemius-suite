@@ -103,6 +103,12 @@ if [ -s './composer.json' ]; then
                 rm -rf "$dir/tests"
             fi
         done
+        for dir in ./vendor/*/*/vendor/*/*/
+        do
+            if [ -d "$dir/tests" ]; then
+                rm -rf "$dir/tests"
+            fi
+        done
         composer dumpautoload -o
     else
         echo "- No composer packages detected for production..."
