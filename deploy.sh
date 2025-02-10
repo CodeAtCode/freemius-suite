@@ -29,14 +29,16 @@ echo "- Deploy process started"
 filezip="$output"/"$packagename"-"$version".zip
 
 php "$wsd"/deploy.php "$user" "$pubkey" "$secretkey" "$filezip" "$id" "$sandbox" "$version"
-status=$?
+if [ $no_wp_repository != "True" ]; then
+    status=$?
 
-if [ $status -ne 3 ]; then
-    rm "$filezip"
+    if [ $status -ne 3 ]; then
+        rm "$filezip"
 
-    filezipfree="$output"/"$packagename"-"$version".free.zip
+        filezipfree="$output"/"$packagename"-"$version".free.zip
 
-    . "$wsd"/release.sh $filezipfree
-else
-    echo "Error happened, file zip generated at $filezip"
+        . "$wsd"/release.sh $filezipfree
+    else
+        echo "Error happened, file zip generated at $filezip"
+    fi
 fi
