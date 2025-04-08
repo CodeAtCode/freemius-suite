@@ -16,8 +16,8 @@
         $api = new Freemius_Api(FS__API_SCOPE, FS__API_DEV_ID, FS__API_PUBLIC_KEY, FS__API_SECRET_KEY, $sandbox);
 
         if (!is_object($api)) {
-            print_r($deploy);
-            die();
+            print_r($api);
+            exit(3);
         }
 
         $deploy = $api->Api('plugins/'.$argv[5].'/tags.json');

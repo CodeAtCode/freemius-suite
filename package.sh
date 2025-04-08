@@ -103,6 +103,9 @@ if [ -s './composer.json' ]; then
             if [ -d "$dir/tests" ]; then
                 rm -rf "$dir/tests"
             fi
+            if [ -d "$dir/node_modules" ]; then
+                rm -rf "$dir/node_modules"
+            fi
         done
         for dir in ./vendor/*/*/vendor/*/*/
         do
@@ -117,6 +120,8 @@ if [ -s './composer.json' ]; then
         rm -rf ./vendor
     fi
 fi
+# Remove all the files in all the folders that starts with a dot
+find . -name '.*' ! -name '.' ! -name '..' -exec rm -rf {} +
 
 # Remove Fake_Freemius - it is the only requirement for Freemius
 if [ -s './Fake_Freemius.php' ]; then
