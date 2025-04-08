@@ -36,8 +36,8 @@
             ));
 
             if (!property_exists($deploy, 'id')) {
-                print_r($deploy);
-                echo "- Deploy error\n";
+                var_dump($deploy);
+                echo "- Deploy error for '.$argv[5].'\n";
                 exit(3);
             }
 

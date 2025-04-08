@@ -74,6 +74,7 @@ rm -rf ./package.json
 rm -rf ./package-lock.json
 rm -rf ./Gruntfile.js
 rm -rf ./gulpfile.js
+rm -rf ./.phpactor.json
 rm -rf ./composer.lock
 rm -rf ./.travis*
 rm -rf ./.php_cs
