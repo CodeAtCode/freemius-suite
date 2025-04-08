@@ -123,6 +123,7 @@ if [ -s './Fake_Freemius.php' ]; then
     rm -rf ./Fake_Freemius.php
     rowff=$(grep -n "/Fake_Freemius.php" "$fileroot" | awk -F: '{print $1}')
     rowff+='s'
+    sed -i "$rowff/.*/			require_once dirname( __FILE__ ) \\. '\\/vendor\\/freemius\\/wordpress-sdk\\/start.php'\;/" "$fileroot"
     sed -i "s/ff_dynamic_init/fs_dynamic_init/g" "$fileroot"
 fi
 # Support for old plugins
