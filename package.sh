@@ -97,7 +97,8 @@ if [ -s './composer.json' ]; then
     if [ "$dep" == 'true' ]; then
         echo "- Downloading clean composer dependencies..."
         rm -rf vendor
-        composer update --no-dev &> /dev/null
+        curl -sS https://getcomposer.org/installer -o /tmp/composer | php
+        php${php} -f /tmp/composer update --no-dev &> /dev/null
         for dir in ./vendor/*/*/
         do
             if [ -d "$dir/tests" ]; then

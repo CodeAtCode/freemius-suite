@@ -56,7 +56,8 @@ echo "- Deploying new plugin version on SVN remote"
 cd "$wpdomain" || exit
 # This command force to add all the files, also if they are new
 svn add --force * --auto-props --parents --depth infinity -q > /dev/null
-svn ci -m "tagging version $version" 2>&1 | grep 'Error running context'
+eval $(crudini --get --format=sh  "$wsd"/config.ini Login)
+svn ci -m "tagging version $version" --username $wp_user 2>&1 | grep 'Error running context'
 if [[ $? -eq 0 ]]
 then
     echo "- Deploy of the new free version failed!"
