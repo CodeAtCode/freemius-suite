@@ -97,8 +97,9 @@ if [ -s './composer.json' ]; then
     if [ "$dep" == 'true' ]; then
         echo "- Downloading clean composer dependencies..."
         rm -rf vendor
-        curl -sS https://getcomposer.org/installer -o /tmp/composer | php
-        php${php} -f /tmp/composer update --no-dev &> /dev/null
+        curl -sS https://getcomposer.org/installer | php
+        php${php} -f composer.phar update --no-dev &> /dev/null
+        php${php} -f composer.phar dumpautoload -o
         for dir in ./vendor/*/*/
         do
             if [ -d "$dir/tests" ]; then
@@ -114,7 +115,7 @@ if [ -s './composer.json' ]; then
                 rm -rf "$dir/tests"
             fi
         done
-        composer dumpautoload -o
+        rm composer.phar
     else
         echo "- No composer packages detected for production..."
         rm -rf ./composer.json
