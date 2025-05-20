@@ -98,8 +98,9 @@ if [ -s './composer.json' ]; then
         echo "- Downloading clean composer dependencies..."
         rm -rf vendor
         curl -sS https://getcomposer.org/installer | php
-        php${php} -f composer.phar update --no-dev &> /dev/null
-        php${php} -f composer.phar dumpautoload -o
+        jq 'del(.["require-dev"])' composer.json > temp.json && mv temp.json composer.json
+        php${php} -f ./composer.phar update &> /dev/null
+        php${php} -f ./composer.phar dumpautoload -o
         for dir in ./vendor/*/*/
         do
             if [ -d "$dir/tests" ]; then

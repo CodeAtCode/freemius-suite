@@ -29,7 +29,7 @@ echo "- Deploy process started"
 filezip="$output"/"$packagename"-"$version".zip
 
 php${php} -f "$wsd"/deploy.php "$user" "$pubkey" "$secretkey" "$filezip" "$id" "$sandbox" "$version"
-if [ $no_wp_repository != "True" ]; then
+if [ "$no_wp_repository" != "True" ]; then
     status=$?
 
     if [ $status -ne 3 ]; then
